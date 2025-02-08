@@ -45,7 +45,7 @@ describe("EditDriverModal component", () => {
     expect(onSubmit).toHaveBeenCalledWith("Jane Smith", "B");
   });
 
-  test("calls onRequestClose when close button is clicked", () => {
+  test("calls onRequestClose when cancel button is clicked", () => {
     const onRequestClose = jest.fn();
     render(
       <EditDriverModal
@@ -57,7 +57,7 @@ describe("EditDriverModal component", () => {
       />
     );
 
-    fireEvent.click(screen.getByText(/×/i));
+    fireEvent.click(screen.getByText(/cancel/i));
     expect(onRequestClose).toHaveBeenCalled();
   });
 });
