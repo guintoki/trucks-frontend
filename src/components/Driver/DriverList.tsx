@@ -67,10 +67,13 @@ const DriverList: React.FC<DriverListProps> = ({
             <Td>{driver.license_type}</Td>
             <Td>
               <IconsDiv>
-                <IconButton onClick={() => onEdit(driver)}>
+                <IconButton aria-label="edit" onClick={() => onEdit(driver)}>
                   <FaEdit />
                 </IconButton>
-                <IconButton onClick={() => onDelete(driver)}>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => onDelete(driver)}
+                >
                   <FaTrash />
                 </IconButton>
               </IconsDiv>
