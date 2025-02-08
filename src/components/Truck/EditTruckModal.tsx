@@ -51,6 +51,19 @@ const Button = styled.button`
   }
 `;
 
+const CancelButton = styled.button`
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: #e53935;
+  }
+`;
+
 interface Truck {
   id: number;
   plate: string;
@@ -120,7 +133,12 @@ const EditTruckModal: React.FC<EditTruckModalProps> = ({
           <option value="D">D</option>
           <option value="E">E</option>
         </Select>
-        <Button type="submit">Update Truck</Button>
+        <div>
+          <Button type="submit">Update Truck</Button>
+          <CancelButton type="button" onClick={onRequestClose}>
+            Cancel
+          </CancelButton>
+        </div>
       </Form>
     </Modal>
   );

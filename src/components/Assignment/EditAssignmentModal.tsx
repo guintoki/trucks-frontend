@@ -54,6 +54,19 @@ const Button = styled.button`
   }
 `;
 
+const CancelButton = styled.button`
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: #e53935;
+  }
+`;
+
 interface EditAssignmentModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -182,7 +195,12 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
           min={getMinDate()}
           required
         />
-        <Button type="submit">Update Assignment</Button>
+        <div>
+          <Button type="submit">Update</Button>
+          <CancelButton type="button" onClick={onRequestClose}>
+            Cancel
+          </CancelButton>
+        </div>
       </Form>
     </Modal>
   );
