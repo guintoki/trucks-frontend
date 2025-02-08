@@ -43,7 +43,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
   }, [onClose]);
 
   return (
-    <ToastContainer type={type}>
+    <ToastContainer data-testid="toast" type={type}>
       {message}
       <CloseButton onClick={onClose}>×</CloseButton>
     </ToastContainer>
