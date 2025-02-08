@@ -2,9 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "./components/Navbar/Navbar";
-import DriverPage from "./components/Driver/DriverPage";
-import TruckPage from "./components/Truck/TruckPage";
-import AssignmentPage from "./components/Assignment/AssignmentPage";
+import DriverPage from "./Pages/Driver/DriverPage";
+import TruckPage from "./Pages/Truck/TruckPage";
+import AssignmentPage from "./Pages/Assignment/AssignmentPage";
 import GlobalStyle from "./GlobalStyles";
 
 const AppContainer = styled.div`
