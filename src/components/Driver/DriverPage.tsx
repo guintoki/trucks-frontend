@@ -7,7 +7,7 @@ import {
 } from "../../api";
 import styled from "styled-components";
 import { ClipLoader } from "react-spinners";
-import DeleteModal from "../Modals/DeleteModal";
+import DeleteModal from "../DeleteModal/DeleteModal";
 import EditDriverModal from "./EditDriverModal";
 import Toast from "../Toast/Toast";
 import DriverList from "./DriverList";

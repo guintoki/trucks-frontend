@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
 import { ClipLoader } from "react-spinners";
 import Toast from "../Toast/Toast";
-import DeleteModal from "../Modals/DeleteModal";
+import DeleteModal from "../DeleteModal/DeleteModal";
 import AssignmentList from "./AssignmentList";
 import AssignmentForm from "./AssignmentForm";
 import EditAssignmentModal from "./EditAssignmentModal";

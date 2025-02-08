@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getTrucks, createTruck, updateTruck, deleteTruck } from "../../api";
 import styled from "styled-components";
 import { ClipLoader } from "react-spinners";
-import DeleteModal from "../Modals/DeleteModal";
+import DeleteModal from "../DeleteModal/DeleteModal";
 import EditTruckModal from "./EditTruckModal";
 import Toast from "../Toast/Toast";
 import TruckList from "./TruckList";
