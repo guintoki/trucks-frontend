@@ -7,11 +7,11 @@ import {
 } from "../../api";
 import styled from "styled-components";
 import { ClipLoader } from "react-spinners";
-import DeleteModal from "../DeleteModal/DeleteModal";
-import EditDriverModal from "./EditDriverModal";
-import Toast from "../Toast/Toast";
-import DriverList from "./DriverList";
-import DriverForm from "./DriverForm";
+import DeleteModal from "../../components/DeleteModal/DeleteModal";
+import EditDriverModal from "../../components/Driver/EditDriverModal";
+import Toast from "../../components/Toast/Toast";
+import DriverList from "../../components/Driver/DriverList";
+import DriverForm from "../../components/Driver/DriverForm";
 import { Driver } from "../../types/Driver";
 import { LicenseType } from "../../types/LicenseType";
 

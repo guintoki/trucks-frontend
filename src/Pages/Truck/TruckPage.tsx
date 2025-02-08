@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { getTrucks, createTruck, updateTruck, deleteTruck } from "../../api";
 import styled from "styled-components";
 import { ClipLoader } from "react-spinners";
-import DeleteModal from "../DeleteModal/DeleteModal";
-import EditTruckModal from "./EditTruckModal";
-import Toast from "../Toast/Toast";
-import TruckList from "./TruckList";
-import TruckForm from "./TruckForm";
+import DeleteModal from "../../components/DeleteModal/DeleteModal";
+import EditTruckModal from "../../components/Truck/EditTruckModal";
+import Toast from "../../components/Toast/Toast";
+import TruckList from "../../components/Truck/TruckList";
+import TruckForm from "../../components/Truck/TruckForm";
 import { Truck } from "../../types/Truck";
 import { LicenseType } from "../../types/LicenseType";
 

@@ -8,11 +8,11 @@ import {
 import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
 import { ClipLoader } from "react-spinners";
-import Toast from "../Toast/Toast";
-import DeleteModal from "../DeleteModal/DeleteModal";
-import AssignmentList from "./AssignmentList";
-import AssignmentForm from "./AssignmentForm";
-import EditAssignmentModal from "./EditAssignmentModal";
+import Toast from "../../components/Toast/Toast";
+import DeleteModal from "../../components/DeleteModal/DeleteModal";
+import AssignmentList from "../../components/Assignment/AssignmentList";
+import AssignmentForm from "../../components/Assignment/AssignmentForm";
+import EditAssignmentModal from "../../components/Assignment/EditAssignmentModal";
 import { LicenseType } from "../../types/LicenseType";
 
 interface Driver {
