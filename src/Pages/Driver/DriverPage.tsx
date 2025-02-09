@@ -22,6 +22,11 @@ const SpinnerContainer = styled.div`
   height: 100vh;
 `;
 
+const PageContainer = styled.div`
+  margin: 20px;
+  width: 400px;
+`;
+
 const DriverPage: React.FC = () => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
@@ -121,7 +126,7 @@ const DriverPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       {loading && (
         <SpinnerContainer>
           <ClipLoader size={50} color={"#123abc"} loading={loading} />
@@ -175,7 +180,7 @@ const DriverPage: React.FC = () => {
           />
         </>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

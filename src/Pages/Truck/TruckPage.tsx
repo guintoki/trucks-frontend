@@ -22,6 +22,11 @@ const SpinnerContainer = styled.div`
   height: 100vh;
 `;
 
+const PageContainer = styled.div`
+  margin: 20px;
+  width: 400px;
+`;
+
 const TruckPage: React.FC = () => {
   const [trucks, setTrucks] = useState<Truck[]>([]);
   const [editingTruck, setEditingTruck] = useState<Truck | null>(null);
@@ -122,7 +127,7 @@ const TruckPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       {loading && (
         <SpinnerContainer>
           <ClipLoader size={50} color={"#123abc"} loading={loading} />
@@ -175,7 +180,7 @@ const TruckPage: React.FC = () => {
           />
         </>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

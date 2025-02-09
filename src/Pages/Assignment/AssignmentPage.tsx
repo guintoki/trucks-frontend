@@ -34,6 +34,11 @@ const SpinnerContainer = styled.div`
   height: 100vh;
 `;
 
+const PageContainer = styled.div`
+  margin: 20px;
+  width: 400px;
+`;
+
 const AssignmentPage: React.FC = () => {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
@@ -100,7 +105,7 @@ const AssignmentPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       {loading ? (
         <SpinnerContainer>
           <ClipLoader size={150} />
@@ -177,7 +182,7 @@ const AssignmentPage: React.FC = () => {
           />
         </>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

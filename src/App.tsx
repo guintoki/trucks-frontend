@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "./components/Navbar/Navbar";
 import DriverPage from "./Pages/Driver/DriverPage";
@@ -26,6 +31,7 @@ const App: React.FC = () => {
           <Route path="/drivers" element={<DriverPage />} />
           <Route path="/trucks" element={<TruckPage />} />
           <Route path="/assignments" element={<AssignmentPage />} />
+          <Route path="*" element={<Navigate to="/drivers" />} />
         </Routes>
       </AppContainer>
     </Router>
