@@ -94,6 +94,11 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
         date,
       };
       const createdAssignment = await createAssignment(newAssignment);
+      if (createdAssignment.error) {
+        setError(createdAssignment.error);
+        setLoading(false);
+        return;
+      }
       onSubmit(createdAssignment);
       setDriverId("");
       setTruckId("");

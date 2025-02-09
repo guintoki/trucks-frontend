@@ -137,12 +137,18 @@ const AssignmentPage: React.FC = () => {
               setSuccess("Assignment added successfully.");
             }}
           />
-          <h2>Assignment List</h2>
-          <AssignmentList
-            assignments={assignments}
-            onEdit={handleEdit}
-            openDeleteModal={openDeleteModal}
-          />
+          {assignments.length === 0 ? (
+            <p>No assignments found.</p>
+          ) : (
+            <>
+              <h2>Assignment List</h2>
+              <AssignmentList
+                assignments={assignments}
+                onEdit={handleEdit}
+                openDeleteModal={openDeleteModal}
+              />
+            </>
+          )}
           <EditAssignmentModal
             isOpen={editAssignmentModalIsOpen}
             onRequestClose={() => setEditAssignmentModalIsOpen(false)}

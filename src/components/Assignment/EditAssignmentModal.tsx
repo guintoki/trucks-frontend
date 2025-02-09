@@ -134,7 +134,15 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
           truck_id: truckId,
           date,
         };
-        await updateAssignment(updatedAssignment.id, updatedAssignment);
+        const updatedAssignmentResponse = await updateAssignment(
+          updatedAssignment.id,
+          updatedAssignment
+        );
+        if (updatedAssignmentResponse.error) {
+          setError(updatedAssignmentResponse.error);
+          setLoading(false);
+          return;
+        }
         onSubmit(updatedAssignment);
         setSuccess("Assignment updated successfully.");
       } catch (err) {

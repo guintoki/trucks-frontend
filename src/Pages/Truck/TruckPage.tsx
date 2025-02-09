@@ -79,7 +79,15 @@ const TruckPage: React.FC = () => {
           plate,
           min_license_type: min_license_type,
         };
-        await updateTruck(editingTruck.id, updatedTruck);
+        const uodatedTruckResponse = await updateTruck(
+          editingTruck.id,
+          updatedTruck
+        );
+        if (uodatedTruckResponse.error) {
+          setError(uodatedTruckResponse.error);
+          setLoading(false);
+          return;
+        }
         setTrucks(
           trucks.map((truck) =>
             truck.id === editingTruck.id ? updatedTruck : truck
@@ -100,6 +108,11 @@ const TruckPage: React.FC = () => {
     try {
       const newTruck = { plate, min_license_type: min_license_type };
       const createdTruck = await createTruck(newTruck);
+      if (createdTruck.error) {
+        setError(createdTruck.error);
+        setLoading(false);
+        return;
+      }
       setTrucks([...trucks, createdTruck]);
       setSuccess("Truck created successfully.");
     } catch (err) {
@@ -133,15 +146,21 @@ const TruckPage: React.FC = () => {
             />
           )}
           <TruckForm onSubmit={handleCreate} />
-          <h2>Truck List</h2>
-          <TruckList
-            trucks={trucks}
-            onEdit={handleEdit}
-            onDelete={(truck) => {
-              setTruckToDelete(truck);
-              setDeleteModalIsOpen(true);
-            }}
-          />
+          {trucks.length === 0 ? (
+            <p>No trucks available.</p>
+          ) : (
+            <>
+              <h2>Truck List</h2>
+              <TruckList
+                trucks={trucks}
+                onEdit={handleEdit}
+                onDelete={(truck) => {
+                  setTruckToDelete(truck);
+                  setDeleteModalIsOpen(true);
+                }}
+              />
+            </>
+          )}
           <EditTruckModal
             isOpen={editModalIsOpen}
             onRequestClose={() => setEditModalIsOpen(false)}

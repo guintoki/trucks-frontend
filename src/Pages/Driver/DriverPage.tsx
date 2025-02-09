@@ -76,7 +76,15 @@ const DriverPage: React.FC = () => {
           name,
           license_type: license_type,
         };
-        await updateDriver(editingDriver.id, updatedDriver);
+        const updatedDriverResponse = await updateDriver(
+          editingDriver.id,
+          updatedDriver
+        );
+        if (updatedDriverResponse.error) {
+          setError(updatedDriverResponse.error);
+          setLoading(false);
+          return;
+        }
         setDrivers(
           drivers.map((driver) =>
             driver.id === editingDriver.id
@@ -99,6 +107,11 @@ const DriverPage: React.FC = () => {
     try {
       const newDriver = { name, license_type: license_type };
       const createdDriver = await createDriver(newDriver);
+      if (createdDriver.error) {
+        setError(createdDriver.error);
+        setLoading(false);
+        return;
+      }
       setDrivers([...drivers, createdDriver]);
       setSuccess("Driver created successfully.");
     } catch (err: any) {
@@ -132,15 +145,21 @@ const DriverPage: React.FC = () => {
             />
           )}
           <DriverForm onSubmit={handleCreate} />
-          <h2>Driver List</h2>
-          <DriverList
-            drivers={drivers}
-            onEdit={handleEdit}
-            onDelete={(driver) => {
-              setDriverToDelete(driver);
-              setDeleteModalIsOpen(true);
-            }}
-          />
+          {drivers.length === 0 ? (
+            <p>No drivers found.</p>
+          ) : (
+            <>
+              <h2>Driver List</h2>
+              <DriverList
+                drivers={drivers}
+                onEdit={handleEdit}
+                onDelete={(driver) => {
+                  setDriverToDelete(driver);
+                  setDeleteModalIsOpen(true);
+                }}
+              />
+            </>
+          )}
           <EditDriverModal
             isOpen={editModalIsOpen}
             onRequestClose={() => setEditModalIsOpen(false)}
