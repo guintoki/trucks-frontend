@@ -78,7 +78,7 @@ const DriverForm: React.FC<DriverFormProps> = ({ onSubmit }) => {
         <option value="D">D</option>
         <option value="E">E</option>
       </Select>
-      <Button type="submit">Add Driver</Button>
+      <Button type="submit">Save Driver</Button>
     </Form>
   );
 };

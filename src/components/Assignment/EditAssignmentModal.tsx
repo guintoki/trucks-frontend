@@ -158,9 +158,9 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
     >
       <h2>Edit Assignment</h2>
       <Form onSubmit={handleSubmit} data-testid="edit-assignment-form">
-        <Label htmlFor="driver">Driver:</Label>
+        <Label htmlFor="editDriver">New Driver:</Label>
         <Select
-          id="driver"
+          id="editDriver"
           value={driverId}
           onChange={handleDriverChange}
           required
@@ -172,9 +172,9 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
             </option>
           ))}
         </Select>
-        <Label htmlFor="truck">Truck:</Label>
+        <Label htmlFor="editTruck">New Truck:</Label>
         <Select
-          id="truck"
+          id="editTruck"
           value={truckId}
           onChange={(e) => setTruckId(e.target.value)}
           required
@@ -186,9 +186,9 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
             </option>
           ))}
         </Select>
-        <Label htmlFor="date">Date:</Label>
+        <Label htmlFor="editDate">New Date:</Label>
         <Input
-          id="date"
+          id="editDate"
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}

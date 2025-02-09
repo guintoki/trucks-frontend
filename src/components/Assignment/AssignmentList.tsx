@@ -69,10 +69,16 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
             <Td>{assignment.date}</Td>
             <Td>
               <IconsDiv>
-                <IconButton onClick={() => onEdit(assignment)}>
+                <IconButton
+                  aria-label="edit"
+                  onClick={() => onEdit(assignment)}
+                >
                   <FaEdit />
                 </IconButton>
-                <IconButton onClick={() => openDeleteModal(assignment.id)}>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => openDeleteModal(assignment.id)}
+                >
                   <FaTrash />
                 </IconButton>
               </IconsDiv>

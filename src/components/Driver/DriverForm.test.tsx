@@ -6,7 +6,7 @@ describe("DriverForm component", () => {
     render(<DriverForm onSubmit={() => {}} />);
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/license type/i)).toBeInTheDocument();
-    expect(screen.getByText(/add driver/i)).toBeInTheDocument();
+    expect(screen.getByText(/save driver/i)).toBeInTheDocument();
   });
 
   test("calls onSubmit with correct data", () => {
@@ -19,7 +19,7 @@ describe("DriverForm component", () => {
     fireEvent.change(screen.getByLabelText(/license type/i), {
       target: { value: "B" },
     });
-    fireEvent.click(screen.getByText(/add driver/i));
+    fireEvent.click(screen.getByText(/save driver/i));
 
     expect(onSubmit).toHaveBeenCalledWith("John Doe", "B");
   });
@@ -33,7 +33,7 @@ describe("DriverForm component", () => {
     fireEvent.change(screen.getByLabelText(/license type/i), {
       target: { value: "B" },
     });
-    fireEvent.click(screen.getByText(/add driver/i));
+    fireEvent.click(screen.getByText(/save driver/i));
 
     expect(screen.getByLabelText(/name/i)).toHaveValue("");
     expect(screen.getByLabelText(/license type/i)).toHaveValue("A");

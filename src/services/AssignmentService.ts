@@ -3,6 +3,7 @@ import { DriverService } from "./DriverService";
 import { TruckService } from "./TruckService";
 
 let assignments: Assignment[] = [];
+let nextId = 1;
 
 export const AssignmentService = {
   getAll: (): Assignment[] => {
@@ -34,7 +35,9 @@ export const AssignmentService = {
       return "Driver or Truck is already assigned on this date";
     }
 
-    assignments.push({ id: Date.now(), ...assignment });
+    const newAssignment = { id: nextId++, ...assignment };
+    assignments.push(newAssignment);
+    return newAssignment.id.toString();
   },
   update: (
     id: number,
@@ -49,7 +52,12 @@ export const AssignmentService = {
         return "Driver or Truck not found";
       }
 
-      if (!isLicenseCompatible(driver.license_type, truck.min_license_type)) {
+      if (
+        !isLicenseCompatible(
+          updatedAssignment.driver.license_type,
+          updatedAssignment.truck.min_license_type
+        )
+      ) {
         return "Driver license type is not compatible with the truck";
       }
 
@@ -65,6 +73,7 @@ export const AssignmentService = {
           a.date === updatedAssignment.date &&
           a.id !== id
       );
+      console.log(isDriverAssigned, isTruckAssigned);
 
       if (isDriverAssigned || isTruckAssigned) {
         return "Driver or Truck is already assigned on this date";

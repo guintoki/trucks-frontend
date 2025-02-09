@@ -47,9 +47,9 @@ test("Renders EditAssignmentModal without errors", () => {
     </BrowserRouter>
   );
 
-  expect(screen.getByLabelText(/driver/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/truck/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/date/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/new driver/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/new truck/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/new date/i)).toBeInTheDocument();
 });
 
 test("Submits the form with correct data", async () => {
@@ -72,11 +72,13 @@ test("Submits the form with correct data", async () => {
     </BrowserRouter>
   );
 
-  fireEvent.change(screen.getByLabelText(/driver/i), {
+  fireEvent.change(screen.getByLabelText(/new driver/i), {
     target: { value: "2" },
   });
-  fireEvent.change(screen.getByLabelText(/truck/i), { target: { value: "2" } });
-  fireEvent.change(screen.getByLabelText(/date/i), {
+  fireEvent.change(screen.getByLabelText(/new truck/i), {
+    target: { value: "2" },
+  });
+  fireEvent.change(screen.getByLabelText(/new date/i), {
     target: { value: "2023-10-11" },
   });
 

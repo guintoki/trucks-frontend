@@ -78,7 +78,7 @@ const TruckForm: React.FC<TruckFormProps> = ({ onSubmit }) => {
         <option value="D">D</option>
         <option value="E">E</option>
       </Select>
-      <Button type="submit">Add Truck</Button>
+      <Button type="submit">Create Truck</Button>
     </Form>
   );
 };

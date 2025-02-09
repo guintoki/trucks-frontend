@@ -29,7 +29,7 @@ test("Calls onSubmit with correct values", () => {
   );
   const plateInput = screen.getByPlaceholderText(/Plate/i);
   const selectInput = screen.getByLabelText(/Min License Type/i);
-  const submitButton = screen.getByText(/Update Truck/i);
+  const submitButton = screen.getByText(/Save update/i);
 
   fireEvent.change(plateInput, { target: { value: "XYZ789" } });
   fireEvent.change(selectInput, { target: { value: "C" } });

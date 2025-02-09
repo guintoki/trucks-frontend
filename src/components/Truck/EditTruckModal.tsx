@@ -111,7 +111,7 @@ const EditTruckModal: React.FC<EditTruckModalProps> = ({
     >
       <h2>Edit Truck</h2>
       <Form onSubmit={handleSubmit}>
-        <Label htmlFor="editPlate">Plate:</Label>
+        <Label htmlFor="editPlate">New Plate:</Label>
         <Input
           id="editPlate"
           type="text"
@@ -120,9 +120,9 @@ const EditTruckModal: React.FC<EditTruckModalProps> = ({
           placeholder="Plate"
           required
         />
-        <Label htmlFor="editmin_license_type">Min License Type:</Label>
+        <Label htmlFor="editMin_license_type">New Min License Type:</Label>
         <Select
-          id="editmin_license_type"
+          id="editMin_license_type"
           value={min_license_type}
           onChange={(e) => setmin_license_type(e.target.value)}
           required
@@ -134,7 +134,7 @@ const EditTruckModal: React.FC<EditTruckModalProps> = ({
           <option value="E">E</option>
         </Select>
         <div>
-          <Button type="submit">Update Truck</Button>
+          <Button type="submit">Save update</Button>
           <CancelButton type="button" onClick={onRequestClose}>
             Cancel
           </CancelButton>

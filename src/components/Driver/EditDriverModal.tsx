@@ -100,7 +100,7 @@ const EditDriverModal: React.FC<EditDriverModalProps> = ({
     >
       <h2>Edit Driver</h2>
       <Form onSubmit={handleSubmit}>
-        <Label htmlFor="editName">Name:</Label>
+        <Label htmlFor="editName">New Name:</Label>
         <Input
           id="editName"
           type="text"

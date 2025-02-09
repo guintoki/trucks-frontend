@@ -63,10 +63,10 @@ const TruckList: React.FC<TruckListProps> = ({ trucks, onEdit, onDelete }) => {
             <Td>{truck.min_license_type}</Td>
             <Td>
               <IconsDiv>
-                <IconButton onClick={() => onEdit(truck)}>
+                <IconButton aria-label="edit" onClick={() => onEdit(truck)}>
                   <FaEdit />
                 </IconButton>
-                <IconButton onClick={() => onDelete(truck)}>
+                <IconButton onClick={() => onDelete(truck)} aria-label="delete">
                   <FaTrash />
                 </IconButton>
               </IconsDiv>
