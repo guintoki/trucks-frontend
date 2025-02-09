@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Truck } from "../../types/Truck";
 import { Assignment } from "../../types/Assignment";
 import { Driver } from "../../types/Driver";
-import { createAssignment } from "../../api";
+import { createAssignment } from "../../utils/api";
 
 const Form = styled.form`
   margin: 20px auto;
@@ -111,7 +111,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} data-testid="assignment-form">
       <Label htmlFor="driver">Driver:</Label>
       <Select
         id="driver"

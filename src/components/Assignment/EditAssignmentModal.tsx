@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
 import { Driver } from "../../types/Driver";
 import { Truck } from "../../types/Truck";
-import { updateAssignment } from "../../api";
+import { updateAssignment } from "../../utils/api";
 
 const modalCustomStyles = {
   content: {
@@ -157,7 +157,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
       onRequestClose={onRequestClose}
     >
       <h2>Edit Assignment</h2>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} data-testid="edit-assignment-form">
         <Label htmlFor="driver">Driver:</Label>
         <Select
           id="driver"

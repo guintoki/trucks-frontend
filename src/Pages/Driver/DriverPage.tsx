@@ -4,7 +4,7 @@ import {
   createDriver,
   updateDriver,
   deleteDriver,
-} from "../../api";
+} from "../../utils/api";
 import styled from "styled-components";
 import { ClipLoader } from "react-spinners";
 import DeleteModal from "../../components/DeleteModal/DeleteModal";

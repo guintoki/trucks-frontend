@@ -4,7 +4,7 @@ import {
   deleteAssignment,
   getDrivers,
   getTrucks,
-} from "../../api";
+} from "../../utils/api";
 import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
 import { ClipLoader } from "react-spinners";

@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getTrucks, createTruck, updateTruck, deleteTruck } from "../../api";
+import {
+  getTrucks,
+  createTruck,
+  updateTruck,
+  deleteTruck,
+} from "../../utils/api";
 import styled from "styled-components";
 import { ClipLoader } from "react-spinners";
 import DeleteModal from "../../components/DeleteModal/DeleteModal";
