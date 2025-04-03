@@ -2,70 +2,121 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
-import { Driver } from "../../types/Driver";
-import { Truck } from "../../types/Truck";
-import { updateAssignment } from "../../utils/api";
+import { LicenseType } from "../../types/LicenseType";
 
-const modalCustomStyles = {
+const ModalStyles = {
   content: {
-    width: "500px",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    transform: "translate(-50%, -50%)",
+    maxWidth: "500px",
+    margin: "0 auto",
+    padding: "2rem",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    border: "none",
+  },
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 };
 
+const ModalTitle = styled.h2`
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+`;
+
 const Form = styled.form`
-  margin: 20px auto;
-  width: 80%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1.5rem;
 `;
 
-const Select = styled.select`
-  margin: 10px;
-  padding: 10px;
-  width: 80%;
-`;
-
-const Input = styled.input`
-  margin: 10px;
-  padding: 10px;
-  width: 80%;
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const Label = styled.label`
-  width: 80%;
-  text-align: left;
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+`;
+
+const Select = styled.select`
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
+  padding: 0.75rem 1.5rem;
   border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
 
-  &:hover {
-    background-color: #45a049;
+  &.primary {
+    background-color: #3498db;
+    color: white;
+
+    &:hover {
+      background-color: #2980b9;
+    }
+  }
+
+  &.secondary {
+    background-color: #e2e8f0;
+    color: #2c3e50;
+
+    &:hover {
+      background-color: #cbd5e0;
+    }
   }
 `;
 
-const CancelButton = styled.button`
-  padding: 10px 20px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-left: 10px;
+interface Driver {
+  id: number;
+  name: string;
+  license_type: LicenseType;
+}
 
-  &:hover {
-    background-color: #e53935;
-  }
-`;
+interface Truck {
+  id: number;
+  plate: string;
+  min_license_type: LicenseType;
+}
 
 interface EditAssignmentModalProps {
   isOpen: boolean;
@@ -75,7 +126,6 @@ interface EditAssignmentModalProps {
   trucks: Truck[];
   assignment: Assignment | null;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
-  setSuccess: React.Dispatch<React.SetStateAction<string | null>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -87,13 +137,11 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
   trucks,
   assignment,
   setError,
-  setSuccess,
   setLoading,
 }) => {
   const [driverId, setDriverId] = useState("");
   const [truckId, setTruckId] = useState("");
   const [date, setDate] = useState("");
-  const [filteredTrucks, setFilteredTrucks] = useState<Truck[]>([]);
 
   useEffect(() => {
     if (assignment) {
@@ -103,112 +151,94 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
     }
   }, [assignment]);
 
-  useEffect(() => {
-    if (driverId) {
-      const selectedDriver = drivers.find(
-        (driver) => driver.id.toString() === driverId
-      );
-      if (selectedDriver) {
-        const availableTrucks = trucks.filter(
-          (truck) => truck.min_license_type <= selectedDriver.license_type
-        );
-        setFilteredTrucks(availableTrucks);
-      }
-    }
-  }, [driverId, drivers, trucks]);
-
-  const handleDriverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDriverId(e.target.value);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (assignment) {
-      setLoading(true);
-      try {
-        const updatedAssignment = {
-          ...assignment,
-          driver: drivers.find((driver) => driver.id === Number(driverId))!,
-          truck: trucks.find((truck) => truck.id === Number(truckId))!,
-          driver_id: driverId,
-          truck_id: truckId,
-          date,
-        };
-        const updatedAssignmentResponse = await updateAssignment(
-          updatedAssignment.id,
-          updatedAssignment
-        );
-        if (updatedAssignmentResponse.error) {
-          setError(updatedAssignmentResponse.error);
-          setLoading(false);
-          return;
-        }
-        onSubmit(updatedAssignment);
-        setSuccess("Assignment updated successfully.");
-      } catch (err) {
-        setError("Failed to update assignment.");
-      }
-      setLoading(false);
-      onRequestClose();
-    }
-  };
 
-  const getMinDate = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+    const selectedDriver = drivers.find(
+      (driver) => driver.id === Number(driverId)
+    );
+    const selectedTruck = trucks.find((truck) => truck.id === Number(truckId));
+
+    if (!selectedDriver || !selectedTruck || !assignment) {
+      return;
+    }
+
+    const updatedAssignment: Assignment = {
+      ...assignment,
+      driver: selectedDriver,
+      truck: selectedTruck,
+      date,
+    };
+
+    onSubmit(updatedAssignment);
   };
 
   return (
     <Modal
-      style={modalCustomStyles}
       isOpen={isOpen}
       onRequestClose={onRequestClose}
+      style={ModalStyles}
+      ariaHideApp={false}
     >
-      <h2>Edit Assignment</h2>
-      <Form onSubmit={handleSubmit} data-testid="edit-assignment-form">
-        <Label htmlFor="editDriver">New Driver:</Label>
-        <Select
-          id="editDriver"
-          value={driverId}
-          onChange={handleDriverChange}
-          required
-        >
-          <option value="">Select a driver</option>
-          {drivers.map((driver) => (
-            <option key={driver.id} value={driver.id}>
-              {driver.name}
-            </option>
-          ))}
-        </Select>
-        <Label htmlFor="editTruck">New Truck:</Label>
-        <Select
-          id="editTruck"
-          value={truckId}
-          onChange={(e) => setTruckId(e.target.value)}
-          required
-        >
-          <option value="">Select a truck</option>
-          {filteredTrucks.map((truck) => (
-            <option key={truck.id} value={truck.id}>
-              {truck.plate}
-            </option>
-          ))}
-        </Select>
-        <Label htmlFor="editDate">New Date:</Label>
-        <Input
-          id="editDate"
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          min={getMinDate()}
-          required
-        />
-        <div>
-          <Button type="submit">Update</Button>
-          <CancelButton type="button" onClick={onRequestClose}>
-            Cancel
-          </CancelButton>
-        </div>
+      <ModalTitle>Editar Atribuição</ModalTitle>
+      <Form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label htmlFor="editDriver">Motorista</Label>
+          <Select
+            id="editDriver"
+            value={driverId}
+            onChange={(e) => setDriverId(e.target.value)}
+            required
+          >
+            <option value="">Selecione um motorista</option>
+            {drivers.map((driver) => (
+              <option key={driver.id} value={driver.id}>
+                {driver.name} - Carteira {driver.license_type}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="editTruck">Caminhão</Label>
+          <Select
+            id="editTruck"
+            value={truckId}
+            onChange={(e) => setTruckId(e.target.value)}
+            required
+          >
+            <option value="">Selecione um caminhão</option>
+            {trucks.map((truck) => (
+              <option key={truck.id} value={truck.id}>
+                {truck.plate} - Carteira mínima {truck.min_license_type}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="editDate">Data</Label>
+          <Input
+            type="date"
+            id="editDate"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+          />
+        </FormGroup>
+
+        <ButtonGroup>
+          <Button type="button" className="secondary" onClick={onRequestClose}>
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            className="primary"
+            disabled={!driverId || !truckId || !date}
+          >
+            Salvar Alterações
+          </Button>
+        </ButtonGroup>
       </Form>
     </Modal>
   );

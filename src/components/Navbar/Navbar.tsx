@@ -1,55 +1,91 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { FaTruck, FaUser, FaClipboardList } from "react-icons/fa";
 
-const NavbarContainer = styled.nav`
-  background-color: #333;
-  overflow: hidden;
-  width: 100%;
+const Nav = styled.nav`
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+`;
+
+const NavContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  display: flex;
-  margin-bottom: 40px;
 `;
 
-const NavbarList = styled.ul`
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-`;
-
-const NavbarItem = styled.li`
-  float: left;
-`;
-
-const NavbarLink = styled(Link)`
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
+const Logo = styled(Link)`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   &:hover {
-    background-color: #111;
+    color: #3498db;
   }
 `;
 
-const Navbar: React.FC = () => {
+const NavLinks = styled.div`
+  display: flex;
+  gap: 1.5rem;
+`;
+
+const NavLink = styled(Link)<{ isActive: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: ${({ isActive }) => (isActive ? "#3498db" : "#64748b")};
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #3498db;
+    background-color: #f1f5f9;
+  }
+
+  svg {
+    font-size: 1.25rem;
+  }
+`;
+
+const Navbar = () => {
+  const location = useLocation();
+
   return (
-    <NavbarContainer>
-      <NavbarList>
-        <NavbarItem>
-          <NavbarLink to="/drivers">Drivers</NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to="/trucks">Trucks</NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to="/assignments">Assignments</NavbarLink>
-        </NavbarItem>
-      </NavbarList>
-    </NavbarContainer>
+    <Nav>
+      <NavContainer>
+        <Logo to="/">
+          <FaTruck />
+          Sistema de Transportes
+        </Logo>
+        <NavLinks>
+          <NavLink to="/" isActive={location.pathname === "/"}>
+            <FaUser />
+            Motoristas
+          </NavLink>
+          <NavLink to="/trucks" isActive={location.pathname === "/trucks"}>
+            <FaTruck />
+            Caminhões
+          </NavLink>
+          <NavLink
+            to="/assignments"
+            isActive={location.pathname === "/assignments"}
+          >
+            <FaClipboardList />
+            Atribuições
+          </NavLink>
+        </NavLinks>
+      </NavContainer>
+    </Nav>
   );
 };
 

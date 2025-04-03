@@ -1,53 +1,95 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Truck } from "../../types/Truck";
 import { Assignment } from "../../types/Assignment";
-import { Driver } from "../../types/Driver";
-import { createAssignment } from "../../utils/api";
+import { LicenseType } from "../../types/LicenseType";
 
 const Form = styled.form`
-  margin: 20px auto;
-  width: 80%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1.5rem;
+  max-width: 500px;
+  margin: 0 auto;
 `;
 
-const Select = styled.select`
-  margin: 10px;
-  padding: 10px;
-  width: 80%;
-`;
-
-const Input = styled.input`
-  margin: 10px;
-  padding: 10px;
-  width: 80%;
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const Label = styled.label`
-  width: 80%;
-  text-align: left;
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+`;
+
+const Select = styled.select`
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #4caf50;
+  padding: 0.75rem 1.5rem;
+  background-color: #3498db;
   color: white;
   border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #2980b9;
+  }
+
+  &:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
   }
 `;
+
+interface Driver {
+  id: number;
+  name: string;
+  license_type: LicenseType;
+}
+
+interface Truck {
+  id: number;
+  plate: string;
+  min_license_type: LicenseType;
+}
 
 interface AssignmentFormProps {
   drivers: Driver[];
   trucks: Truck[];
   setAssignments: React.Dispatch<React.SetStateAction<Assignment[]>>;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
-  setSuccess: React.Dispatch<React.SetStateAction<string | null>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: (assignment: Assignment) => void;
 }
@@ -55,106 +97,87 @@ interface AssignmentFormProps {
 const AssignmentForm: React.FC<AssignmentFormProps> = ({
   drivers,
   trucks,
-  setAssignments,
-  setError,
-  setSuccess,
-  setLoading,
   onSubmit,
 }) => {
   const [driverId, setDriverId] = useState("");
   const [truckId, setTruckId] = useState("");
   const [date, setDate] = useState("");
-  const [filteredTrucks, setFilteredTrucks] = useState<Truck[]>([]);
 
-  useEffect(() => {
-    if (driverId) {
-      const selectedDriver = drivers.find(
-        (driver) => driver.id.toString() === driverId
-      );
-      if (selectedDriver) {
-        const availableTrucks = trucks.filter(
-          (truck) => truck.min_license_type <= selectedDriver.license_type
-        );
-        setFilteredTrucks(availableTrucks);
-      }
-    }
-  }, [driverId, drivers, trucks]);
-
-  const handleDriverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDriverId(e.target.value);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const newAssignment = {
-        driver_id: driverId,
-        truck_id: truckId,
-        date,
-      };
-      const createdAssignment = await createAssignment(newAssignment);
-      if (createdAssignment.error) {
-        setError(createdAssignment.error);
-        setLoading(false);
-        return;
-      }
-      onSubmit(createdAssignment);
-      setDriverId("");
-      setTruckId("");
-      setDate("");
-      setSuccess("Assignment created successfully.");
-    } catch (err) {
-      setError("Failed to create assignment.");
-    }
-    setLoading(false);
-  };
 
-  const getMinDate = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+    const selectedDriver = drivers.find(
+      (driver) => driver.id === Number(driverId)
+    );
+    const selectedTruck = trucks.find((truck) => truck.id === Number(truckId));
+
+    if (!selectedDriver || !selectedTruck) {
+      return;
+    }
+
+    const newAssignment: Assignment = {
+      id: Date.now(),
+      driver: selectedDriver,
+      truck: selectedTruck,
+      date,
+    };
+
+    onSubmit(newAssignment);
+    setDriverId("");
+    setTruckId("");
+    setDate("");
   };
 
   return (
-    <Form onSubmit={handleSubmit} data-testid="assignment-form">
-      <Label htmlFor="driver">Driver:</Label>
-      <Select
-        id="driver"
-        value={driverId}
-        onChange={handleDriverChange}
-        required
-      >
-        <option value="">Select a driver</option>
-        {drivers.map((driver) => (
-          <option key={driver.id} value={driver.id}>
-            {driver.name}
-          </option>
-        ))}
-      </Select>
-      <Label htmlFor="truck">Truck:</Label>
-      <Select
-        id="truck"
-        value={truckId}
-        onChange={(e) => setTruckId(e.target.value)}
-        required
-      >
-        <option value="">Select a truck</option>
-        {filteredTrucks.map((truck) => (
-          <option key={truck.id} value={truck.id}>
-            {truck.plate}
-          </option>
-        ))}
-      </Select>
-      <Label htmlFor="date">Date:</Label>
-      <Input
-        id="date"
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        min={getMinDate()}
-        required
-      />
-      <Button type="submit">Add Assignment</Button>
+    <Form onSubmit={handleSubmit}>
+      <FormGroup>
+        <Label htmlFor="driver">Motorista</Label>
+        <Select
+          id="driver"
+          value={driverId}
+          onChange={(e) => setDriverId(e.target.value)}
+          required
+        >
+          <option value="">Selecione um motorista</option>
+          {drivers.map((driver) => (
+            <option key={driver.id} value={driver.id}>
+              {driver.name} - Carteira {driver.license_type}
+            </option>
+          ))}
+        </Select>
+      </FormGroup>
+
+      <FormGroup>
+        <Label htmlFor="truck">Caminhão</Label>
+        <Select
+          id="truck"
+          value={truckId}
+          onChange={(e) => setTruckId(e.target.value)}
+          required
+        >
+          <option value="">Selecione um caminhão</option>
+          {trucks.map((truck) => (
+            <option key={truck.id} value={truck.id}>
+              {truck.plate} - Carteira mínima {truck.min_license_type}
+            </option>
+          ))}
+        </Select>
+      </FormGroup>
+
+      <FormGroup>
+        <Label htmlFor="date">Data</Label>
+        <Input
+          type="date"
+          id="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+      </FormGroup>
+
+      <Button type="submit" disabled={!driverId || !truckId || !date}>
+        Adicionar Atribuição
+      </Button>
     </Form>
   );
 };

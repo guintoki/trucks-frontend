@@ -1,41 +1,77 @@
 import React from "react";
 import styled from "styled-components";
-import { FaTrash, FaEdit } from "react-icons/fa";
 import { Driver } from "../../types/Driver";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Table = styled.table`
-  width: 80%;
-  margin: 20px auto;
-  border-collapse: collapse;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const Th = styled.th`
-  background-color: #333;
-  color: white;
-  padding: 10px;
+const TableHeader = styled.thead`
+  background-color: #f8fafc;
 `;
 
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+const TableHeaderCell = styled.th`
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e2e8f0;
 `;
 
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  color: #ff4d4d;
-  cursor: pointer;
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background-color: #f8fafc;
+  }
 
   &:hover {
-    color: #ff1a1a;
+    background-color: #f1f5f9;
   }
 `;
 
-const IconsDiv = styled.div`
+const TableCell = styled.td`
+  padding: 1rem;
+  color: #2c3e50;
+  border-bottom: 1px solid #e2e8f0;
+`;
+
+const ActionButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  color: #64748b;
+
+  &:hover {
+    background-color: #f1f5f9;
+    color: #3498db;
+  }
+
+  &.delete:hover {
+    color: #e74c3c;
+  }
+`;
+
+const ButtonGroup = styled.div`
   display: flex;
-  justify-content: space-between;
-  padding: 5px;
+  gap: 0.5rem;
+`;
+
+const EmptyMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 interface DriverListProps {
@@ -49,36 +85,44 @@ const DriverList: React.FC<DriverListProps> = ({
   onEdit,
   onDelete,
 }) => {
+  if (drivers.length === 0) {
+    return <EmptyMessage>Nenhum motorista cadastrado</EmptyMessage>;
+  }
+
   return (
     <Table>
-      <thead>
+      <TableHeader>
         <tr>
-          <Th>ID</Th>
-          <Th>Name</Th>
-          <Th>License Type</Th>
-          <Th>Actions</Th>
+          <TableHeaderCell>ID</TableHeaderCell>
+          <TableHeaderCell>Nome</TableHeaderCell>
+          <TableHeaderCell>Tipo de Carteira</TableHeaderCell>
+          <TableHeaderCell>Ações</TableHeaderCell>
         </tr>
-      </thead>
+      </TableHeader>
       <tbody>
         {drivers.map((driver) => (
-          <tr key={driver.id}>
-            <Td>{driver.id}</Td>
-            <Td>{driver.name}</Td>
-            <Td>{driver.license_type}</Td>
-            <Td>
-              <IconsDiv>
-                <IconButton aria-label="edit" onClick={() => onEdit(driver)}>
+          <TableRow key={driver.id}>
+            <TableCell>{driver.id}</TableCell>
+            <TableCell>{driver.name}</TableCell>
+            <TableCell>{driver.license_type}</TableCell>
+            <TableCell>
+              <ButtonGroup>
+                <ActionButton
+                  onClick={() => onEdit(driver)}
+                  aria-label="Editar motorista"
+                >
                   <FaEdit />
-                </IconButton>
-                <IconButton
-                  aria-label="delete"
+                </ActionButton>
+                <ActionButton
                   onClick={() => onDelete(driver)}
+                  className="delete"
+                  aria-label="Excluir motorista"
                 >
                   <FaTrash />
-                </IconButton>
-              </IconsDiv>
-            </Td>
-          </tr>
+                </ActionButton>
+              </ButtonGroup>
+            </TableCell>
+          </TableRow>
         ))}
       </tbody>
     </Table>

@@ -6,92 +6,113 @@ import { Driver } from "../../types/Driver";
 import { Truck } from "../../types/Truck";
 import { LicenseType } from "../../types/LicenseType";
 import { updateAssignment } from "../../utils/api";
+import { Assignment } from "../../types/Assignment";
 
 jest.mock("../../utils/api");
 
-const drivers: Driver[] = [
-  { id: 1, name: "Driver 1", license_type: "B" },
-  { id: 2, name: "Driver 2", license_type: "C" },
+const mockDrivers: Driver[] = [
+  { id: 1, name: "Motorista 1", license_type: "B" },
+  { id: 2, name: "Motorista 2", license_type: "C" },
 ];
 
-const trucks: Truck[] = [
-  { id: 1, plate: "ABC123", min_license_type: "B" },
-  { id: 2, plate: "XYZ789", min_license_type: "C" },
+const mockTrucks: Truck[] = [
+  { id: 1, plate: "ABC1234", min_license_type: "B" },
+  { id: 2, plate: "XYZ5678", min_license_type: "C" },
 ];
 
-const assignment = {
+const assignment: Assignment = {
   id: 1,
-  driver: { id: 1, name: "Driver 1", license_type: "B" as LicenseType },
-  truck: { id: 1, plate: "ABC123", min_license_type: "B" as LicenseType },
-  date: "2023-10-10",
+  driver: mockDrivers[0],
+  truck: mockTrucks[0],
+  date: "2024-03-20",
 };
 
 beforeAll(() => {
   Modal.setAppElement("body");
 });
 
-test("Renders EditAssignmentModal without errors", () => {
-  render(
-    <BrowserRouter>
-      <EditAssignmentModal
-        isOpen={true}
-        onRequestClose={jest.fn()}
-        onSubmit={jest.fn()}
-        drivers={drivers}
-        trucks={trucks}
-        assignment={assignment}
-        setError={jest.fn()}
-        setSuccess={jest.fn()}
-        setLoading={jest.fn()}
-      />
-    </BrowserRouter>
-  );
+describe("EditAssignmentModal", () => {
+  it("renders modal with correct data", () => {
+    render(
+      <BrowserRouter>
+        <EditAssignmentModal
+          isOpen={true}
+          onRequestClose={jest.fn()}
+          onSubmit={jest.fn()}
+          drivers={mockDrivers}
+          trucks={mockTrucks}
+          assignment={assignment}
+          setError={jest.fn()}
+          setLoading={jest.fn()}
+        />
+      </BrowserRouter>
+    );
 
-  expect(screen.getByLabelText(/new driver/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/new truck/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/new date/i)).toBeInTheDocument();
-});
-
-test("Submits the form with correct data", async () => {
-  const onSubmit = jest.fn();
-  (updateAssignment as jest.Mock).mockResolvedValue({});
-
-  render(
-    <BrowserRouter>
-      <EditAssignmentModal
-        isOpen={true}
-        onRequestClose={jest.fn()}
-        onSubmit={onSubmit}
-        drivers={drivers}
-        trucks={trucks}
-        assignment={assignment}
-        setError={jest.fn()}
-        setSuccess={jest.fn()}
-        setLoading={jest.fn()}
-      />
-    </BrowserRouter>
-  );
-
-  fireEvent.change(screen.getByLabelText(/new driver/i), {
-    target: { value: "2" },
-  });
-  fireEvent.change(screen.getByLabelText(/new truck/i), {
-    target: { value: "2" },
-  });
-  fireEvent.change(screen.getByLabelText(/new date/i), {
-    target: { value: "2023-10-11" },
+    expect(screen.getByText(/editar atribuição/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/motorista/i)).toHaveValue("1");
+    expect(screen.getByLabelText(/caminhão/i)).toHaveValue("1");
+    expect(screen.getByLabelText(/data/i)).toHaveValue("2024-03-20");
   });
 
-  fireEvent.submit(screen.getByTestId("edit-assignment-form"));
+  it("calls onSubmit with correct data when form is submitted", async () => {
+    const onSubmit = jest.fn();
+    (updateAssignment as jest.Mock).mockResolvedValue({});
 
-  await waitFor(() =>
-    expect(onSubmit).toHaveBeenCalledWith({
-      ...assignment,
-      driver: drivers[1],
-      truck: trucks[1],
-      driver_id: "2",
-      truck_id: "2",
-      date: "2023-10-11",
-    })
-  );
+    render(
+      <BrowserRouter>
+        <EditAssignmentModal
+          isOpen={true}
+          onRequestClose={jest.fn()}
+          onSubmit={onSubmit}
+          drivers={mockDrivers}
+          trucks={mockTrucks}
+          assignment={assignment}
+          setError={jest.fn()}
+          setLoading={jest.fn()}
+        />
+      </BrowserRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText(/motorista/i), {
+      target: { value: "2" },
+    });
+    fireEvent.change(screen.getByLabelText(/caminhão/i), {
+      target: { value: "2" },
+    });
+    fireEvent.change(screen.getByLabelText(/data/i), {
+      target: { value: "2024-03-21" },
+    });
+
+    fireEvent.click(screen.getByText(/salvar/i));
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith({
+        id: 1,
+        driver: mockDrivers[1],
+        truck: mockTrucks[1],
+        date: "2024-03-21",
+      });
+    });
+  });
+
+  it("calls onRequestClose when cancel button is clicked", () => {
+    const onRequestClose = jest.fn();
+    render(
+      <BrowserRouter>
+        <EditAssignmentModal
+          isOpen={true}
+          onRequestClose={onRequestClose}
+          onSubmit={jest.fn()}
+          drivers={mockDrivers}
+          trucks={mockTrucks}
+          assignment={assignment}
+          setError={jest.fn()}
+          setLoading={jest.fn()}
+        />
+      </BrowserRouter>
+    );
+
+    fireEvent.click(screen.getByText(/cancelar/i));
+    expect(onRequestClose).toHaveBeenCalled();
+  });
 });

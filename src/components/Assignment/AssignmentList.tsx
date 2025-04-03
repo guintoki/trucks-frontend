@@ -1,47 +1,83 @@
 import React from "react";
 import styled from "styled-components";
-import { FaTrash, FaEdit } from "react-icons/fa";
 import { Assignment } from "../../types/Assignment";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Table = styled.table`
-  width: 80%;
-  margin: 20px auto;
-  border-collapse: collapse;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const Th = styled.th`
-  background-color: #333;
-  color: white;
-  padding: 10px;
+const TableHeader = styled.thead`
+  background-color: #f8fafc;
 `;
 
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+const TableHeaderCell = styled.th`
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e2e8f0;
 `;
 
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  color: #ff4d4d;
-  cursor: pointer;
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background-color: #f8fafc;
+  }
 
   &:hover {
-    color: #ff1a1a;
+    background-color: #f1f5f9;
   }
 `;
 
-const IconsDiv = styled.div`
+const TableCell = styled.td`
+  padding: 1rem;
+  color: #2c3e50;
+  border-bottom: 1px solid #e2e8f0;
+`;
+
+const ActionButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  color: #64748b;
+
+  &:hover {
+    background-color: #f1f5f9;
+    color: #3498db;
+  }
+
+  &.delete:hover {
+    color: #e74c3c;
+  }
+`;
+
+const ButtonGroup = styled.div`
   display: flex;
-  justify-content: space-between;
-  padding: 5px;
+  gap: 0.5rem;
+`;
+
+const EmptyMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 interface AssignmentListProps {
   assignments: Assignment[];
-  openDeleteModal: (id: number) => void;
   onEdit: (assignment: Assignment) => void;
+  openDeleteModal: (id: number) => void;
 }
 
 const AssignmentList: React.FC<AssignmentListProps> = ({
@@ -49,41 +85,48 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
   onEdit,
   openDeleteModal,
 }) => {
+  if (assignments.length === 0) {
+    return <EmptyMessage>Nenhuma atribuição cadastrada</EmptyMessage>;
+  }
+
   return (
     <Table>
-      <thead>
+      <TableHeader>
         <tr>
-          <Th>ID</Th>
-          <Th>Driver</Th>
-          <Th>Truck</Th>
-          <Th>Date</Th>
-          <Th>Actions</Th>
+          <TableHeaderCell>ID</TableHeaderCell>
+          <TableHeaderCell>Motorista</TableHeaderCell>
+          <TableHeaderCell>Caminhão</TableHeaderCell>
+          <TableHeaderCell>Data</TableHeaderCell>
+          <TableHeaderCell>Ações</TableHeaderCell>
         </tr>
-      </thead>
+      </TableHeader>
       <tbody>
         {assignments.map((assignment) => (
-          <tr key={assignment.id}>
-            <Td>{assignment.id}</Td>
-            <Td>{assignment.driver.name}</Td>
-            <Td>{assignment.truck.plate}</Td>
-            <Td>{assignment.date}</Td>
-            <Td>
-              <IconsDiv>
-                <IconButton
-                  aria-label="edit"
+          <TableRow key={assignment.id}>
+            <TableCell>{assignment.id}</TableCell>
+            <TableCell>{assignment.driver.name}</TableCell>
+            <TableCell>{assignment.truck.plate}</TableCell>
+            <TableCell>
+              {new Date(assignment.date).toLocaleDateString()}
+            </TableCell>
+            <TableCell>
+              <ButtonGroup>
+                <ActionButton
                   onClick={() => onEdit(assignment)}
+                  aria-label="Editar atribuição"
                 >
                   <FaEdit />
-                </IconButton>
-                <IconButton
-                  aria-label="delete"
+                </ActionButton>
+                <ActionButton
                   onClick={() => openDeleteModal(assignment.id)}
+                  className="delete"
+                  aria-label="Excluir atribuição"
                 >
                   <FaTrash />
-                </IconButton>
-              </IconsDiv>
-            </Td>
-          </tr>
+                </ActionButton>
+              </ButtonGroup>
+            </TableCell>
+          </TableRow>
         ))}
       </tbody>
     </Table>
