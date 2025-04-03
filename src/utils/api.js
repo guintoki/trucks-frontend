@@ -11,7 +11,7 @@ export async function getDriver(driverId) {
 }
 
 export async function createDriver(driverData) {
-  const response = await fetch(`${API_URL}/drivers`, {
+  const response = await fetch(`${API_URL}/drivers/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export async function getTruck(truckId) {
 }
 
 export async function createTruck(truckData) {
-  const response = await fetch(`${API_URL}/trucks`, {
+  const response = await fetch(`${API_URL}/trucks/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export async function getAssignment(assignmentId) {
 }
 
 export async function createAssignment(assignmentData) {
-  const response = await fetch(`${API_URL}/assignments`, {
+  const response = await fetch(`${API_URL}/assignments/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
