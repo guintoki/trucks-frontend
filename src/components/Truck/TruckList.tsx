@@ -1,41 +1,82 @@
 import React from "react";
 import styled from "styled-components";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { Truck } from "../../types/Truck";
 
 const Table = styled.table`
-  width: 80%;
-  margin: 20px auto;
+  width: 100%;
   border-collapse: collapse;
+  margin-top: 1rem;
 `;
 
-const Th = styled.th`
-  background-color: #333;
-  color: white;
-  padding: 10px;
+const TableHeader = styled.thead`
+  background-color: #f8f9fa;
 `;
 
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+const TableHeaderCell = styled.th`
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 2px solid #ddd;
 `;
 
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  color: #ff4d4d;
-  cursor: pointer;
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background-color: #f8f9fa;
+  }
 
   &:hover {
-    color: #ff1a1a;
+    background-color: #f1f1f1;
   }
 `;
 
-const IconsDiv = styled.div`
+const TableCell = styled.td`
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  color: #2c3e50;
+`;
+
+const ActionButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+`;
+
+const ButtonGroup = styled.div`
   display: flex;
-  justify-content: space-between;
-  padding: 5px;
+  gap: 0.5rem;
+`;
+
+const EditButton = styled(ActionButton)`
+  color: #3498db;
+
+  &:hover {
+    color: #2980b9;
+  }
+`;
+
+const DeleteButton = styled(ActionButton)`
+  color: #e74c3c;
+
+  &:hover {
+    color: #c0392b;
+  }
+`;
+
+const EmptyMessage = styled.p`
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
 `;
 
 interface TruckListProps {
@@ -45,33 +86,43 @@ interface TruckListProps {
 }
 
 const TruckList: React.FC<TruckListProps> = ({ trucks, onEdit, onDelete }) => {
+  if (trucks.length === 0) {
+    return <EmptyMessage>Nenhum caminhão encontrado.</EmptyMessage>;
+  }
+
   return (
     <Table>
-      <thead>
+      <TableHeader>
         <tr>
-          <Th>ID</Th>
-          <Th>Plate</Th>
-          <Th>Min License Type</Th>
-          <Th>Actions</Th>
+          <TableHeaderCell>ID</TableHeaderCell>
+          <TableHeaderCell>Placa</TableHeaderCell>
+          <TableHeaderCell>Tipo de CNH Mínimo</TableHeaderCell>
+          <TableHeaderCell>Ações</TableHeaderCell>
         </tr>
-      </thead>
+      </TableHeader>
       <tbody>
         {trucks.map((truck) => (
-          <tr key={truck.id}>
-            <Td>{truck.id}</Td>
-            <Td>{truck.plate}</Td>
-            <Td>{truck.min_license_type}</Td>
-            <Td>
-              <IconsDiv>
-                <IconButton aria-label="edit" onClick={() => onEdit(truck)}>
+          <TableRow key={truck.id}>
+            <TableCell>{truck.id}</TableCell>
+            <TableCell>{truck.plate}</TableCell>
+            <TableCell>{truck.min_license_type}</TableCell>
+            <TableCell>
+              <ButtonGroup>
+                <EditButton
+                  onClick={() => onEdit(truck)}
+                  aria-label="Editar caminhão"
+                >
                   <FaEdit />
-                </IconButton>
-                <IconButton onClick={() => onDelete(truck)} aria-label="delete">
+                </EditButton>
+                <DeleteButton
+                  onClick={() => onDelete(truck)}
+                  aria-label="Excluir caminhão"
+                >
                   <FaTrash />
-                </IconButton>
-              </IconsDiv>
-            </Td>
-          </tr>
+                </DeleteButton>
+              </ButtonGroup>
+            </TableCell>
+          </TableRow>
         ))}
       </tbody>
     </Table>

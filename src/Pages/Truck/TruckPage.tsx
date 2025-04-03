@@ -6,25 +6,72 @@ import {
   deleteTruck,
 } from "../../utils/api";
 import styled from "styled-components";
-import { ClipLoader } from "react-spinners";
-import DeleteModal from "../../components/DeleteModal/DeleteModal";
+import { toast } from "react-toastify";
+import DeleteTruckModal from "../../components/Truck/DeleteTruckModal";
 import EditTruckModal from "../../components/Truck/EditTruckModal";
-import Toast from "../../components/Toast/Toast";
 import TruckList from "../../components/Truck/TruckList";
 import TruckForm from "../../components/Truck/TruckForm";
 import { Truck } from "../../types/Truck";
 import { LicenseType } from "../../types/LicenseType";
-
-const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
+import { FaSpinner } from "react-icons/fa";
 
 const PageContainer = styled.div`
-  margin: 20px;
-  width: 400px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+`;
+
+const PageHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+`;
+
+const PageTitle = styled.h1`
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0;
+`;
+
+const Section = styled.section`
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+`;
+
+const LoadingSpinner = styled(FaSpinner)`
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  color: #3498db;
+  margin: 2rem auto;
+  display: block;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: #e74c3c;
+  background-color: #fde8e8;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
 `;
 
 const TruckPage: React.FC = () => {
@@ -35,35 +82,36 @@ const TruckPage: React.FC = () => {
   const [truckToDelete, setTruckToDelete] = useState<Truck | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTrucks() {
-      setLoading(true);
-      try {
-        const trucksData = await getTrucks();
-        setTrucks(trucksData);
-      } catch (err) {
-        setError("Failed to fetch trucks.");
-      }
-      setLoading(false);
-    }
     fetchTrucks();
   }, []);
 
+  const fetchTrucks = async () => {
+    try {
+      setLoading(true);
+      const trucksData = await getTrucks();
+      setTrucks(trucksData);
+      setError(null);
+    } catch (err) {
+      setError("Erro ao carregar caminhões");
+      toast.error("Erro ao carregar caminhões");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (truckToDelete) {
-      setLoading(true);
       try {
         await deleteTruck(truckToDelete.id);
         setTrucks(trucks.filter((truck) => truck.id !== truckToDelete.id));
         setTruckToDelete(null);
         setDeleteModalIsOpen(false);
-        setSuccess("Truck deleted successfully.");
+        toast.success("Caminhão excluído com sucesso");
       } catch (err) {
-        setError("Failed to delete truck.");
+        toast.error("Erro ao excluir caminhão");
       }
-      setLoading(false);
     }
   };
 
@@ -77,22 +125,13 @@ const TruckPage: React.FC = () => {
     min_license_type: LicenseType
   ) => {
     if (editingTruck) {
-      setLoading(true);
       try {
         const updatedTruck = {
           ...editingTruck,
           plate,
-          min_license_type: min_license_type,
+          min_license_type,
         };
-        const uodatedTruckResponse = await updateTruck(
-          editingTruck.id,
-          updatedTruck
-        );
-        if (uodatedTruckResponse.error) {
-          setError(uodatedTruckResponse.error);
-          setLoading(false);
-          return;
-        }
+        await updateTruck(editingTruck.id, updatedTruck);
         setTrucks(
           trucks.map((truck) =>
             truck.id === editingTruck.id ? updatedTruck : truck
@@ -100,62 +139,46 @@ const TruckPage: React.FC = () => {
         );
         setEditingTruck(null);
         setEditModalIsOpen(false);
-        setSuccess("Truck updated successfully.");
+        toast.success("Caminhão atualizado com sucesso");
       } catch (err) {
-        setError("Failed to update truck.");
+        toast.error("Erro ao atualizar caminhão");
       }
-      setLoading(false);
     }
   };
 
   const handleCreate = async (plate: string, min_license_type: LicenseType) => {
-    setLoading(true);
     try {
-      const newTruck = { plate, min_license_type: min_license_type };
+      const newTruck = { plate, min_license_type };
       const createdTruck = await createTruck(newTruck);
-      if (createdTruck.error) {
-        setError(createdTruck.error);
-        setLoading(false);
-        return;
-      }
       setTrucks([...trucks, createdTruck]);
-      setSuccess("Truck created successfully.");
+      toast.success("Caminhão criado com sucesso");
     } catch (err) {
-      setError("Failed to create truck.");
+      toast.error("Erro ao criar caminhão");
     }
-    setLoading(false);
   };
 
   return (
     <PageContainer>
-      {loading && (
-        <SpinnerContainer>
-          <ClipLoader size={50} color={"#123abc"} loading={loading} />
-        </SpinnerContainer>
-      )}
-      {!loading && (
+      <PageHeader>
+        <PageTitle>Gerenciamento de Caminhões</PageTitle>
+      </PageHeader>
+
+      {loading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <ErrorMessage>{error}</ErrorMessage>
+      ) : (
         <>
-          <h2>Add Truck</h2>
-          {error && (
-            <Toast
-              message={error}
-              type="error"
-              onClose={() => setError(null)}
-            />
-          )}
-          {success && (
-            <Toast
-              message={success}
-              type="success"
-              onClose={() => setSuccess(null)}
-            />
-          )}
-          <TruckForm onSubmit={handleCreate} />
-          {trucks.length === 0 ? (
-            <p>No trucks available.</p>
-          ) : (
-            <>
-              <h2>Truck List</h2>
+          <Section>
+            <SectionTitle>Adicionar Caminhão</SectionTitle>
+            <TruckForm onSubmit={handleCreate} />
+          </Section>
+
+          <Section>
+            <SectionTitle>Lista de Caminhões</SectionTitle>
+            {trucks.length === 0 ? (
+              <p>Nenhum caminhão encontrado.</p>
+            ) : (
               <TruckList
                 trucks={trucks}
                 onEdit={handleEdit}
@@ -164,22 +187,24 @@ const TruckPage: React.FC = () => {
                   setDeleteModalIsOpen(true);
                 }}
               />
-            </>
-          )}
-          <EditTruckModal
-            isOpen={editModalIsOpen}
-            onRequestClose={() => setEditModalIsOpen(false)}
-            onSubmit={handleEditSubmit}
-            truck={editingTruck}
-          />
-          <DeleteModal
-            isOpen={deleteModalIsOpen}
-            onRequestClose={() => setDeleteModalIsOpen(false)}
-            onDelete={handleDelete}
-            itemType="truck"
-          />
+            )}
+          </Section>
         </>
       )}
+
+      <EditTruckModal
+        isOpen={editModalIsOpen}
+        onRequestClose={() => setEditModalIsOpen(false)}
+        onSubmit={handleEditSubmit}
+        truck={editingTruck}
+      />
+
+      <DeleteTruckModal
+        isOpen={deleteModalIsOpen}
+        onRequestClose={() => setDeleteModalIsOpen(false)}
+        onConfirm={handleDelete}
+        truck={truckToDelete}
+      />
     </PageContainer>
   );
 };

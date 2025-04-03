@@ -2,73 +2,99 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { LicenseType } from "../../types/LicenseType";
+import { Truck } from "../../types/Truck";
 
-const modalCustomStyles = {
-  content: {
-    width: "500px",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    transform: "translate(-50%, -50%)",
-  },
-};
+const ModalContent = styled.div`
+  padding: 2rem;
+`;
+
+const Title = styled.h2`
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+`;
 
 const Form = styled.form`
-  margin: 20px auto;
-  width: 80%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1rem;
 `;
 
-const Input = styled.input`
-  margin: 10px;
-  padding: 10px;
-  width: 80%;
-`;
-
-const Select = styled.select`
-  margin: 10px;
-  padding: 10px;
-  width: 80%;
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const Label = styled.label`
-  width: 80%;
-  text-align: left;
+  font-size: 0.9rem;
+  color: #666;
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+`;
+
+const Select = styled.select`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s;
 
   &:hover {
-    background-color: #45a049;
+    opacity: 0.9;
   }
 `;
 
-const CancelButton = styled.button`
-  padding: 10px 20px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-left: 10px;
+const CancelButton = styled(Button)`
+  background-color: #f1f1f1;
+  color: #666;
+  border: 1px solid #ddd;
 
   &:hover {
-    background-color: #e53935;
+    background-color: #e5e5e5;
   }
 `;
 
-interface Truck {
-  id: number;
-  plate: string;
-  min_license_type: string;
-}
+const SaveButton = styled(Button)`
+  background-color: #3498db;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #2980b9;
+  }
+`;
 
 interface EditTruckModalProps {
   isOpen: boolean;
@@ -83,63 +109,83 @@ const EditTruckModal: React.FC<EditTruckModalProps> = ({
   onSubmit,
   truck,
 }) => {
-  const initialPlate = truck ? truck.plate : "";
-  const initialmin_license_type = truck ? truck.min_license_type : "";
-
-  const [plate, setPlate] = useState(initialPlate);
-  const [min_license_type, setmin_license_type] = useState(
-    initialmin_license_type
-  );
+  const [plate, setPlate] = useState("");
+  const [min_license_type, setMinLicenseType] = useState<LicenseType>("B");
 
   useEffect(() => {
     if (truck) {
       setPlate(truck.plate);
-      setmin_license_type(truck.min_license_type);
+      setMinLicenseType(truck.min_license_type);
     }
   }, [truck]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(plate, min_license_type as LicenseType);
+    onSubmit(plate, min_license_type);
   };
 
   return (
     <Modal
-      style={modalCustomStyles}
       isOpen={isOpen}
       onRequestClose={onRequestClose}
+      style={{
+        content: {
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+          maxWidth: "500px",
+          width: "90%",
+          borderRadius: "8px",
+          border: "none",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        },
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        },
+      }}
     >
-      <h2>Edit Truck</h2>
-      <Form onSubmit={handleSubmit}>
-        <Label htmlFor="editPlate">New Plate:</Label>
-        <Input
-          id="editPlate"
-          type="text"
-          value={plate}
-          onChange={(e) => setPlate(e.target.value)}
-          placeholder="Plate"
-          required
-        />
-        <Label htmlFor="editMin_license_type">New Min License Type:</Label>
-        <Select
-          id="editMin_license_type"
-          value={min_license_type}
-          onChange={(e) => setmin_license_type(e.target.value)}
-          required
-        >
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-          <option value="E">E</option>
-        </Select>
-        <div>
-          <Button type="submit">Save update</Button>
-          <CancelButton type="button" onClick={onRequestClose}>
-            Cancel
-          </CancelButton>
-        </div>
-      </Form>
+      <ModalContent>
+        <Title>Editar Caminhão</Title>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label htmlFor="plate">Placa</Label>
+            <Input
+              id="plate"
+              type="text"
+              value={plate}
+              onChange={(e) => setPlate(e.target.value)}
+              placeholder="ABC1234"
+              required
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor="min_license_type">Tipo de CNH Mínimo</Label>
+            <Select
+              id="min_license_type"
+              value={min_license_type}
+              onChange={(e) => setMinLicenseType(e.target.value as LicenseType)}
+              required
+            >
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+            </Select>
+          </FormGroup>
+
+          <ButtonGroup>
+            <CancelButton type="button" onClick={onRequestClose}>
+              Cancelar
+            </CancelButton>
+            <SaveButton type="submit">Salvar</SaveButton>
+          </ButtonGroup>
+        </Form>
+      </ModalContent>
     </Modal>
   );
 };
