@@ -80,6 +80,11 @@ interface AssignmentListProps {
   openDeleteModal: (id: number) => void;
 }
 
+const formatDate = (dateString: string) => {
+  const [year, month, day] = dateString.split("-");
+  return `${day}/${month}/${year}`;
+};
+
 const AssignmentList: React.FC<AssignmentListProps> = ({
   assignments,
   onEdit,
@@ -106,9 +111,7 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
             <TableCell>{assignment.id}</TableCell>
             <TableCell>{assignment.driver.name}</TableCell>
             <TableCell>{assignment.truck.plate}</TableCell>
-            <TableCell>
-              {new Date(assignment.date).toLocaleDateString()}
-            </TableCell>
+            <TableCell>{formatDate(assignment.date)}</TableCell>
             <TableCell>
               <ButtonGroup>
                 <ActionButton

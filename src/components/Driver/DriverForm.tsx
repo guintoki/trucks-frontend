@@ -78,13 +78,13 @@ interface DriverFormProps {
 
 const DriverForm: React.FC<DriverFormProps> = ({ onSubmit }) => {
   const [name, setName] = useState("");
-  const [license_type, setLicenseType] = useState<LicenseType>("B");
+  const [license_type, setLicenseType] = useState<LicenseType>("A");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(name, license_type);
     setName("");
-    setLicenseType("B");
+    setLicenseType("A");
   };
 
   return (

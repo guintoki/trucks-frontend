@@ -83,7 +83,6 @@ const DriverPage: React.FC = () => {
   const [driverToDelete, setDriverToDelete] = useState<Driver | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     fetchDrivers();

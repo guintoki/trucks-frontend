@@ -73,13 +73,13 @@ interface TruckFormProps {
 
 const TruckForm: React.FC<TruckFormProps> = ({ onSubmit }) => {
   const [plate, setPlate] = useState("");
-  const [min_license_type, setMinLicenseType] = useState<LicenseType>("B");
+  const [min_license_type, setMinLicenseType] = useState<LicenseType>("A");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(plate, min_license_type);
     setPlate("");
-    setMinLicenseType("B");
+    setMinLicenseType("A");
   };
 
   return (
