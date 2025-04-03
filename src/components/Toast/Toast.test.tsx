@@ -1,7 +1,16 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import Toast from "./Toast";
 
 describe("Toast component", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    cleanup();
+  });
+
   test("renders the Toast message correctly", () => {
     render(
       <Toast message="Success message" type="success" onClose={() => {}} />
@@ -17,7 +26,6 @@ describe("Toast component", () => {
   });
 
   test("calls onClose after 5 seconds", () => {
-    jest.useFakeTimers();
     const onClose = jest.fn();
     render(
       <Toast message="Auto close message" type="success" onClose={onClose} />

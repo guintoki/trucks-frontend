@@ -115,6 +115,7 @@ const EditDriverModal: React.FC<EditDriverModalProps> = ({
           value={license_type}
           onChange={(e) => setLicenseType(e.target.value as LicenseType)}
           required
+          data-testid="editLicenseType"
         >
           <option value="A">A</option>
           <option value="B">B</option>

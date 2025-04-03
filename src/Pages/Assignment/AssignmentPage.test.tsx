@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from "@testing-library/react";
 import AssignmentPage from "./AssignmentPage";
 import { BrowserRouter } from "react-router-dom";
 import {
@@ -31,9 +37,14 @@ const assignments: Assignment[] = [
 ];
 
 beforeEach(() => {
+  jest.clearAllMocks();
   (getAssignments as jest.Mock).mockResolvedValue(assignments);
   (getDrivers as jest.Mock).mockResolvedValue(drivers);
   (getTrucks as jest.Mock).mockResolvedValue(trucks);
+});
+
+afterEach(() => {
+  cleanup();
 });
 
 test("renders AssignmentPage without errors", async () => {
@@ -135,13 +146,17 @@ test("deletes an assignment", async () => {
       <AssignmentPage />
     </BrowserRouter>
   );
+
   await waitFor(() => {
     expect(
       screen.getByRole("heading", { level: 2, name: /add assignment/i })
     ).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getAllByLabelText("delete")[0]);
+  const deleteButtons = await screen.findAllByLabelText("delete");
+  expect(deleteButtons).toHaveLength(2);
+
+  fireEvent.click(deleteButtons[0]);
   fireEvent.click(screen.getByText(/yes/i));
 
   await waitFor(() =>
@@ -279,8 +294,13 @@ test("closes delete assignment modal on request close", async () => {
     ).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getAllByLabelText("delete")[0]);
+  const deleteButtons = await screen.findAllByLabelText("delete");
+  expect(deleteButtons).toHaveLength(2);
+
+  fireEvent.click(deleteButtons[0]);
   fireEvent.click(screen.getByText(/no/i));
 
-  expect(screen.queryByText(/are you sure/i)).not.toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText(/are you sure/i)).not.toBeInTheDocument();
+  });
 });

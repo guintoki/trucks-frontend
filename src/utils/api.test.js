@@ -52,7 +52,7 @@ test("createDriver makes a POST request to the correct URL", async () => {
 
   await createDriver(driverData);
 
-  expect(fetch).toHaveBeenCalledWith(`${API_URL}/drivers`, {
+  expect(fetch).toHaveBeenCalledWith(`${API_URL}/drivers/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -118,7 +118,7 @@ test("createTruck makes a POST request to the correct URL", async () => {
 
   await createTruck(truckData);
 
-  expect(fetch).toHaveBeenCalledWith(`${API_URL}/trucks`, {
+  expect(fetch).toHaveBeenCalledWith(`${API_URL}/trucks/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -184,7 +184,7 @@ test("createAssignment makes a POST request to the correct URL", async () => {
 
   await createAssignment(assignmentData);
 
-  expect(fetch).toHaveBeenCalledWith(`${API_URL}/assignments`, {
+  expect(fetch).toHaveBeenCalledWith(`${API_URL}/assignments/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
