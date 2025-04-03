@@ -36,11 +36,12 @@ const NavLinks = styled.div`
   gap: 1.5rem;
 `;
 
-const NavLink = styled(Link)<{ isActive: boolean }>`
+const NavLink = styled(Link)<{ "data-isactive": boolean }>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: ${({ isActive }) => (isActive ? "#3498db" : "#64748b")};
+  color: ${({ "data-isactive": isActive }) =>
+    isActive ? "#3498db" : "#64748b"};
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -68,17 +69,17 @@ const Navbar = () => {
           Sistema de Transportes
         </Logo>
         <NavLinks>
-          <NavLink to="/" isActive={location.pathname === "/"}>
+          <NavLink to="/" data-isactive={location.pathname === "/"}>
             <FaUser />
             Motoristas
           </NavLink>
-          <NavLink to="/trucks" isActive={location.pathname === "/trucks"}>
+          <NavLink to="/trucks" data-isactive={location.pathname === "/trucks"}>
             <FaTruck />
             Caminhões
           </NavLink>
           <NavLink
             to="/assignments"
-            isActive={location.pathname === "/assignments"}
+            data-isactive={location.pathname === "/assignments"}
           >
             <FaClipboardList />
             Atribuições

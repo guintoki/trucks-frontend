@@ -13,19 +13,30 @@ beforeEach(() => {
 test("renders Navbar without errors", async () => {
   render(<App />);
 
-  expect(screen.getByText(/drivers/i)).toBeInTheDocument();
-  expect(screen.getByText(/trucks/i)).toBeInTheDocument();
-  expect(screen.getByText(/assignments/i)).toBeInTheDocument();
+  await waitFor(() => {
+    const navLinks = screen.getAllByRole("link");
+    expect(navLinks[1]).toHaveTextContent(/motoristas/i);
+  });
+
+  await waitFor(() => {
+    const navLinks = screen.getAllByRole("link");
+    expect(navLinks[2]).toHaveTextContent(/caminhões/i);
+  });
+
+  await waitFor(() => {
+    const navLinks = screen.getAllByRole("link");
+    expect(navLinks[3]).toHaveTextContent(/atribuições/i);
+  });
 });
 
-test("renders DriverPage when navigating to /drivers", async () => {
-  window.history.pushState({}, "Drivers Page", "/drivers");
+test("renders DriverPage when navigating to /", async () => {
+  window.history.pushState({}, "Drivers Page", "/");
 
   render(<App />);
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add driver/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar motorista/i })
     ).toBeInTheDocument();
   });
 });
@@ -37,7 +48,7 @@ test("renders TruckPage when navigating to /trucks", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add truck/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar caminhão/i })
     ).toBeInTheDocument();
   });
 });
@@ -49,7 +60,7 @@ test("renders AssignmentPage when navigating to /assignments", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 });
