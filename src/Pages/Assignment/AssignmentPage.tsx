@@ -172,9 +172,7 @@ const AssignmentPage: React.FC = () => {
             <AssignmentForm
               drivers={drivers}
               trucks={trucks}
-              setAssignments={setAssignments}
               setError={setError}
-              setLoading={setLoading}
               onSubmit={(assignment: Assignment) => {
                 setAssignments((prevAssignments) => [
                   ...prevAssignments,

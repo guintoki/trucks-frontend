@@ -25,9 +25,7 @@ describe("AssignmentForm", () => {
         <AssignmentForm
           drivers={mockDrivers}
           trucks={mockTrucks}
-          setAssignments={jest.fn()}
           setError={jest.fn()}
-          setLoading={jest.fn()}
           onSubmit={jest.fn()}
         />
       </BrowserRouter>
@@ -46,9 +44,7 @@ describe("AssignmentForm", () => {
         <AssignmentForm
           drivers={mockDrivers}
           trucks={mockTrucks}
-          setAssignments={jest.fn()}
           setError={jest.fn()}
-          setLoading={jest.fn()}
           onSubmit={onSubmit}
         />
       </BrowserRouter>
@@ -80,9 +76,7 @@ describe("AssignmentForm", () => {
         <AssignmentForm
           drivers={mockDrivers}
           trucks={mockTrucks}
-          setAssignments={jest.fn()}
           setError={jest.fn()}
-          setLoading={jest.fn()}
           onSubmit={jest.fn()}
         />
       </BrowserRouter>

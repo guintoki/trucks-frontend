@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
+import { createAssignment } from "../../utils/api";
 import { LicenseType } from "../../types/LicenseType";
 
 const Form = styled.form`
@@ -88,9 +89,7 @@ interface Truck {
 interface AssignmentFormProps {
   drivers: Driver[];
   trucks: Truck[];
-  setAssignments: React.Dispatch<React.SetStateAction<Assignment[]>>;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: (assignment: Assignment) => void;
 }
 
@@ -98,34 +97,56 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
   drivers,
   trucks,
   onSubmit,
+  setError,
 }) => {
   const [driverId, setDriverId] = useState("");
   const [truckId, setTruckId] = useState("");
   const [date, setDate] = useState("");
+  const [filteredTrucks, setFilteredTrucks] = useState<Truck[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const selectedDriver = drivers.find(
-      (driver) => driver.id === Number(driverId)
-    );
-    const selectedTruck = trucks.find((truck) => truck.id === Number(truckId));
-
-    if (!selectedDriver || !selectedTruck) {
-      return;
+  useEffect(() => {
+    if (driverId) {
+      const selectedDriver = drivers.find(
+        (driver) => driver.id.toString() === driverId
+      );
+      if (selectedDriver) {
+        const availableTrucks = trucks.filter(
+          (truck) => truck.min_license_type <= selectedDriver.license_type
+        );
+        setFilteredTrucks(availableTrucks);
+      }
     }
+  }, [driverId, drivers, trucks]);
 
-    const newAssignment: Assignment = {
-      id: Date.now(),
-      driver: selectedDriver,
-      truck: selectedTruck,
-      date,
-    };
+  const handleDriverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDriverId(e.target.value);
+  };
 
-    onSubmit(newAssignment);
-    setDriverId("");
-    setTruckId("");
-    setDate("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const newAssignment = {
+        driver_id: driverId,
+        truck_id: truckId,
+        date,
+      };
+      const createdAssignment = await createAssignment(newAssignment);
+      if (createdAssignment.error) {
+        setError(createdAssignment.error);
+        return;
+      }
+      onSubmit(createdAssignment);
+      setDriverId("");
+      setTruckId("");
+      setDate("");
+    } catch (err) {
+      setError("Failed to create assignment.");
+    }
+  };
+
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
   };
 
   return (
@@ -135,7 +156,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
         <Select
           id="driver"
           value={driverId}
-          onChange={(e) => setDriverId(e.target.value)}
+          onChange={handleDriverChange}
           required
         >
           <option value="">Selecione um motorista</option>
@@ -156,7 +177,8 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
           required
         >
           <option value="">Selecione um caminhão</option>
-          {trucks.map((truck) => (
+
+          {filteredTrucks.map((truck) => (
             <option key={truck.id} value={truck.id}>
               {truck.plate} - Carteira mínima {truck.min_license_type}
             </option>
@@ -171,6 +193,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
           id="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
+          min={getMinDate()}
           required
         />
       </FormGroup>

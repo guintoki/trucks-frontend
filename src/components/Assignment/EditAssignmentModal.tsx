@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
 import { LicenseType } from "../../types/LicenseType";
+import { updateAssignment } from "../../utils/api";
 
 const ModalStyles = {
   content: {
@@ -142,6 +143,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
   const [driverId, setDriverId] = useState("");
   const [truckId, setTruckId] = useState("");
   const [date, setDate] = useState("");
+  const [filteredTrucks, setFilteredTrucks] = useState<Truck[]>([]);
 
   useEffect(() => {
     if (assignment) {
@@ -151,26 +153,58 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
     }
   }, [assignment]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const selectedDriver = drivers.find(
-      (driver) => driver.id === Number(driverId)
-    );
-    const selectedTruck = trucks.find((truck) => truck.id === Number(truckId));
-
-    if (!selectedDriver || !selectedTruck || !assignment) {
-      return;
+  useEffect(() => {
+    if (driverId) {
+      const selectedDriver = drivers.find(
+        (driver) => driver.id.toString() === driverId
+      );
+      if (selectedDriver) {
+        const availableTrucks = trucks.filter(
+          (truck) => truck.min_license_type <= selectedDriver.license_type
+        );
+        setFilteredTrucks(availableTrucks);
+      }
     }
+  }, [driverId, drivers, trucks]);
 
-    const updatedAssignment: Assignment = {
-      ...assignment,
-      driver: selectedDriver,
-      truck: selectedTruck,
-      date,
-    };
+  const handleDriverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDriverId(e.target.value);
+  };
 
-    onSubmit(updatedAssignment);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (assignment) {
+      setLoading(true);
+      try {
+        const updatedAssignment = {
+          ...assignment,
+          driver: drivers.find((driver) => driver.id === Number(driverId))!,
+          truck: trucks.find((truck) => truck.id === Number(truckId))!,
+          driver_id: driverId,
+          truck_id: truckId,
+          date,
+        };
+        const updatedAssignmentResponse = await updateAssignment(
+          updatedAssignment.id,
+          updatedAssignment
+        );
+        if (updatedAssignmentResponse.error) {
+          setError(updatedAssignmentResponse.error);
+          setLoading(false);
+          return;
+        }
+        onSubmit(updatedAssignment);
+      } catch (err) {
+        setError("Failed to update assignment.");
+      }
+      setLoading(false);
+      onRequestClose();
+    }
+  };
+
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
   };
 
   return (
@@ -187,7 +221,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
           <Select
             id="editDriver"
             value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
+            onChange={handleDriverChange}
             required
           >
             <option value="">Selecione um motorista</option>
@@ -208,7 +242,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
             required
           >
             <option value="">Selecione um caminhão</option>
-            {trucks.map((truck) => (
+            {filteredTrucks.map((truck) => (
               <option key={truck.id} value={truck.id}>
                 {truck.plate} - Carteira mínima {truck.min_license_type}
               </option>
@@ -223,6 +257,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
             id="editDate"
             value={date}
             onChange={(e) => setDate(e.target.value)}
+            min={getMinDate()}
             required
           />
         </FormGroup>
