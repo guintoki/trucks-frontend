@@ -32,7 +32,9 @@ describe("DriverList component", () => {
       <DriverList drivers={drivers} onEdit={() => {}} onDelete={onDelete} />
     );
 
-    fireEvent.click(screen.getAllByRole("button", { name: /delete/i })[0]);
+    fireEvent.click(
+      screen.getAllByRole("button", { name: /excluir motorista/i })[0]
+    );
     expect(onDelete).toHaveBeenCalledWith(drivers[0]);
   });
 });

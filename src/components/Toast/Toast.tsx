@@ -45,7 +45,9 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
   return (
     <ToastContainer data-testid="toast" type={type}>
       {message}
-      <CloseButton onClick={onClose}>×</CloseButton>
+      <CloseButton onClick={onClose} aria-label="fechar">
+        ×
+      </CloseButton>
     </ToastContainer>
   );
 };

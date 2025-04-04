@@ -56,7 +56,7 @@ test("renders AssignmentPage without errors", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
   expect(await screen.findByText(/2023-10-10/i)).toBeInTheDocument();
@@ -80,15 +80,17 @@ test("creates a new assignment", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByLabelText(/driver/i), {
+  fireEvent.change(screen.getByLabelText(/motorista/i), {
     target: { value: "1" },
   });
-  fireEvent.change(screen.getByLabelText(/truck/i), { target: { value: "1" } });
-  fireEvent.change(screen.getByLabelText(/date/i), {
+  fireEvent.change(screen.getByLabelText(/caminhão/i), {
+    target: { value: "1" },
+  });
+  fireEvent.change(screen.getByLabelText(/data/i), {
     target: { value: "2023-10-12" },
   });
 
@@ -113,23 +115,25 @@ test("updates an assignment", async () => {
   );
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getAllByRole("button", { name: /edit/i })[0]);
+  fireEvent.click(
+    screen.getAllByRole("button", { name: /editar atribuição/i })[0]
+  );
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /edit assignment/i })
+      screen.getByRole("heading", { level: 2, name: /editar atribuição/i })
     ).toBeInTheDocument();
   });
-  fireEvent.change(screen.getByLabelText(/new driver/i), {
+  fireEvent.change(screen.getByLabelText(/novo motorista/i), {
     target: { value: "2" },
   });
-  fireEvent.change(screen.getByLabelText(/new truck/i), {
+  fireEvent.change(screen.getByLabelText(/novo caminhão/i), {
     target: { value: "2" },
   });
-  fireEvent.change(screen.getByLabelText(/new date/i), {
+  fireEvent.change(screen.getByLabelText(/nova data/i), {
     target: { value: "2023-10-13" },
   });
 
@@ -149,15 +153,17 @@ test("deletes an assignment", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 
-  const deleteButtons = await screen.findAllByLabelText("delete");
+  const deleteButtons = await screen.findAllByRole("button", {
+    name: /excluir atribuição/i,
+  });
   expect(deleteButtons).toHaveLength(2);
 
   fireEvent.click(deleteButtons[0]);
-  fireEvent.click(screen.getByText(/yes/i));
+  fireEvent.click(screen.getByRole("button", { name: /^excluir$/i }));
 
   await waitFor(() =>
     expect(screen.queryByText(/2023-10-10/i)).not.toBeInTheDocument()
@@ -182,7 +188,7 @@ test("handles error during fetch in useEffect", async () => {
   );
 
   await waitFor(() => {
-    expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
+    expect(screen.getByText(/erro ao carregar dados/i)).toBeInTheDocument();
   });
 });
 
@@ -199,17 +205,18 @@ test("handles error when deleting an assignment", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getAllByLabelText("delete")[0]);
-  fireEvent.click(screen.getByText(/yes/i));
+  const deleteButtons = await screen.findAllByRole("button", {
+    name: /excluir atribuição/i,
+  });
+  fireEvent.click(deleteButtons[0]);
+  fireEvent.click(screen.getByText(/excluir/i));
 
   await waitFor(() => {
-    expect(
-      screen.getByText(/failed to delete assignment/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/erro ao excluir atribuição/i)).toBeInTheDocument();
   });
 });
 
@@ -231,11 +238,12 @@ test("closes error toast", async () => {
   );
 
   await waitFor(() => {
-    expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
+    expect(screen.getByText(/erro ao carregar dados/i)).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByRole("button", { name: /×/i }));
-  expect(screen.queryByText(/failed to fetch data/i)).not.toBeInTheDocument();
+  const closeButton = screen.getByRole("button", { name: /^fechar$/i });
+  fireEvent.click(closeButton);
+  expect(screen.queryByText(/erro ao carregar dados/i)).not.toBeInTheDocument();
 });
 
 test("closes success toast", async () => {
@@ -255,15 +263,17 @@ test("closes success toast", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByLabelText(/driver/i), {
+  fireEvent.change(screen.getByLabelText(/motorista/i), {
     target: { value: "1" },
   });
-  fireEvent.change(screen.getByLabelText(/truck/i), { target: { value: "1" } });
-  fireEvent.change(screen.getByLabelText(/date/i), {
+  fireEvent.change(screen.getByLabelText(/caminhão/i), {
+    target: { value: "1" },
+  });
+  fireEvent.change(screen.getByLabelText(/data/i), {
     target: { value: "2023-10-12" },
   });
 
@@ -271,13 +281,14 @@ test("closes success toast", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByText(/Assignment created successfully./i)
+      screen.getByText(/^atribuição adicionada com sucesso$/i)
     ).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByRole("button", { name: /×/i }));
+  const closeButton = screen.getByRole("button", { name: /^fechar$/i });
+  fireEvent.click(closeButton);
   expect(
-    screen.queryByText(/Assignment created successfully./i)
+    screen.queryByText(/^atribuição adicionada com sucesso$/i)
   ).not.toBeInTheDocument();
 });
 
@@ -290,17 +301,19 @@ test("closes delete assignment modal on request close", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { level: 2, name: /add assignment/i })
+      screen.getByRole("heading", { level: 2, name: /adicionar atribuição/i })
     ).toBeInTheDocument();
   });
 
-  const deleteButtons = await screen.findAllByLabelText("delete");
+  const deleteButtons = await screen.findAllByRole("button", {
+    name: /excluir atribuição/i,
+  });
   expect(deleteButtons).toHaveLength(2);
 
   fireEvent.click(deleteButtons[0]);
-  fireEvent.click(screen.getByText(/no/i));
+  fireEvent.click(screen.getByText(/cancelar/i));
 
   await waitFor(() => {
-    expect(screen.queryByText(/are you sure/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/tem certeza/i)).not.toBeInTheDocument();
   });
 });

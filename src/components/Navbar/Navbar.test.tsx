@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import Navbar from "./Navbar";
 
@@ -10,20 +10,26 @@ test("Renders Navbar without errors", () => {
   );
 });
 
-test("Renders links correctly", () => {
+test("Renders links correctly", async () => {
   render(
     <BrowserRouter>
       <Navbar />
     </BrowserRouter>
   );
+  await waitFor(() => {
+    const navLinks = screen.getAllByRole("link");
+    expect(navLinks[1]).toHaveTextContent(/motoristas/i);
+  });
 
-  const driversLink = screen.getByText(/drivers/i);
-  const trucksLink = screen.getByText(/trucks/i);
-  const assignmentsLink = screen.getByText(/assignments/i);
+  await waitFor(() => {
+    const navLinks = screen.getAllByRole("link");
+    expect(navLinks[2]).toHaveTextContent(/caminhões/i);
+  });
 
-  expect(driversLink).toBeInTheDocument();
-  expect(trucksLink).toBeInTheDocument();
-  expect(assignmentsLink).toBeInTheDocument();
+  await waitFor(() => {
+    const navLinks = screen.getAllByRole("link");
+    expect(navLinks[3]).toHaveTextContent(/atribuições/i);
+  });
 });
 
 test("Links have correct href attributes", () => {
@@ -33,11 +39,11 @@ test("Links have correct href attributes", () => {
     </BrowserRouter>
   );
 
-  const driversLink = screen.getByText(/drivers/i);
-  const trucksLink = screen.getByText(/trucks/i);
-  const assignmentsLink = screen.getByText(/assignments/i);
+  const driversLink = screen.getByRole("link", { name: /motoristas/i });
+  const trucksLink = screen.getByRole("link", { name: /caminhões/i });
+  const assignmentsLink = screen.getByRole("link", { name: /atribuições/i });
 
-  expect(driversLink).toHaveAttribute("href", "/drivers");
+  expect(driversLink).toHaveAttribute("href", "/");
   expect(trucksLink).toHaveAttribute("href", "/trucks");
   expect(assignmentsLink).toHaveAttribute("href", "/assignments");
 });

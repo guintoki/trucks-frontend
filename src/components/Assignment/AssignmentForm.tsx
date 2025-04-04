@@ -123,6 +123,8 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("ta na tela");
+
     e.preventDefault();
     try {
       const newAssignment = {
@@ -150,7 +152,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} data-testid="assignment-form">
       <FormGroup>
         <Label htmlFor="driver">Motorista</Label>
         <Select
@@ -198,7 +200,11 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({
         />
       </FormGroup>
 
-      <Button type="submit" disabled={!driverId || !truckId || !date}>
+      <Button
+        type="submit"
+        disabled={!driverId || !truckId || !date}
+        data-test-id="submit-button"
+      >
         Adicionar Atribuição
       </Button>
     </Form>

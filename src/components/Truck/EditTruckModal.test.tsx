@@ -13,7 +13,7 @@ test("Renders EditTruckModal without errors", () => {
       truck={truck}
     />
   );
-  const plateInput = screen.getByPlaceholderText(/Plate/i);
+  const plateInput = screen.getByPlaceholderText(/ABC1234/i);
   expect(plateInput).toBeInTheDocument();
 });
 
@@ -27,9 +27,9 @@ test("Calls onSubmit with correct values", () => {
       truck={truck}
     />
   );
-  const plateInput = screen.getByPlaceholderText(/Plate/i);
-  const selectInput = screen.getByLabelText(/Min License Type/i);
-  const submitButton = screen.getByText(/Save update/i);
+  const plateInput = screen.getByPlaceholderText(/ABC1234/i);
+  const selectInput = screen.getByLabelText(/Tipo de CNH Mínimo/i);
+  const submitButton = screen.getByText(/Salvar/i);
 
   fireEvent.change(plateInput, { target: { value: "XYZ789" } });
   fireEvent.change(selectInput, { target: { value: "C" } });

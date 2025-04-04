@@ -18,8 +18,8 @@ describe("EditDriverModal component", () => {
       />
     );
 
-    expect(screen.getByLabelText(/name/i)).toHaveValue("John Doe");
-    expect(screen.getByLabelText(/license type/i)).toHaveValue("A");
+    expect(screen.getByLabelText("Nome do Motorista")).toHaveValue("John Doe");
+    expect(screen.getByLabelText("Tipo de Carteira")).toHaveValue("A");
   });
 
   test("calls onSubmit with updated values", () => {
@@ -34,13 +34,13 @@ describe("EditDriverModal component", () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText(/name/i), {
+    fireEvent.change(screen.getByLabelText("Nome do Motorista"), {
       target: { value: "Jane Smith" },
     });
-    fireEvent.change(screen.getByLabelText(/license type/i), {
+    fireEvent.change(screen.getByLabelText("Tipo de Carteira"), {
       target: { value: "B" },
     });
-    fireEvent.click(screen.getByText(/update driver/i));
+    fireEvent.click(screen.getByText(/salvar alterações/i));
 
     expect(onSubmit).toHaveBeenCalledWith("Jane Smith", "B");
   });
@@ -57,7 +57,7 @@ describe("EditDriverModal component", () => {
       />
     );
 
-    fireEvent.click(screen.getByText(/cancel/i));
+    fireEvent.click(screen.getByText(/cancelar/i));
     expect(onRequestClose).toHaveBeenCalled();
   });
 });
