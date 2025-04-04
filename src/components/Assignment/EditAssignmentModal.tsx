@@ -215,7 +215,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
       ariaHideApp={false}
     >
       <ModalTitle>Editar Atribuição</ModalTitle>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} data-testid="edit-assignment-form">
         <FormGroup>
           <Label htmlFor="editDriver">Motorista</Label>
           <Select

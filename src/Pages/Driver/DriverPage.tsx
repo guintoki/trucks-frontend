@@ -6,7 +6,6 @@ import {
   deleteDriver,
 } from "../../utils/api";
 import styled from "styled-components";
-import { ClipLoader } from "react-spinners";
 import DeleteDriverModal from "../../components/Driver/DeleteDriverModal";
 import EditDriverModal from "../../components/Driver/EditDriverModal";
 import DriverList from "../../components/Driver/DriverList";

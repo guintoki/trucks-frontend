@@ -83,15 +83,30 @@ describe("EditAssignmentModal", () => {
       target: { value: "2024-03-21" },
     });
 
-    fireEvent.click(screen.getByText(/salvar/i));
+    const form = screen.getByTestId("edit-assignment-form");
+    fireEvent.submit(form);
 
     await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalledWith({
-        id: 1,
-        driver: mockDrivers[1],
-        truck: mockTrucks[1],
-        date: "2024-03-21",
-      });
+      expect(updateAssignment).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
+          id: 1,
+          driver_id: "2",
+          truck_id: "2",
+          date: "2024-03-21",
+        })
+      );
+    });
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 1,
+          driver: mockDrivers[1],
+          truck: mockTrucks[1],
+          date: "2024-03-21",
+        })
+      );
     });
   });
 

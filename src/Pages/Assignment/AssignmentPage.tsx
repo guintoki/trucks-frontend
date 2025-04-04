@@ -7,7 +7,6 @@ import {
 } from "../../utils/api";
 import styled from "styled-components";
 import { Assignment } from "../../types/Assignment";
-import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import DeleteAssignmentModal from "../../components/Assignment/DeleteAssignmentModal";
 import AssignmentList from "../../components/Assignment/AssignmentList";
