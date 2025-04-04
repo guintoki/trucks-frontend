@@ -139,6 +139,8 @@ const AssignmentPage: React.FC = () => {
         setDeleteModalIsOpen(false);
         toast.success("Atribuição excluída com sucesso");
       } catch (err) {
+        console.log("Deleting assignment with ID:", assignmentToDelete);
+
         toast.error("Erro ao excluir atribuição");
       }
     }

@@ -105,7 +105,7 @@ const DeleteAssignmentModal: React.FC<DeleteAssignmentModalProps> = ({
             Cancelar
           </Button>
           <Button type="button" className="primary" onClick={onConfirm}>
-            Excluir
+            Excluir permanentemente
           </Button>
         </ButtonGroup>
       </ModalContent>

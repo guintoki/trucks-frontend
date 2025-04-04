@@ -73,13 +73,13 @@ describe("EditAssignmentModal", () => {
       </BrowserRouter>
     );
 
-    fireEvent.change(screen.getByLabelText(/motorista/i), {
+    fireEvent.change(screen.getByLabelText(/novo motorista/i), {
       target: { value: "2" },
     });
-    fireEvent.change(screen.getByLabelText(/caminhão/i), {
+    fireEvent.change(screen.getByLabelText(/novo caminhão/i), {
       target: { value: "2" },
     });
-    fireEvent.change(screen.getByLabelText(/data/i), {
+    fireEvent.change(screen.getByLabelText(/nova data/i), {
       target: { value: "2024-03-21" },
     });
 

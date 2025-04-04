@@ -127,19 +127,19 @@ test("updates an assignment", async () => {
       screen.getByRole("heading", { level: 2, name: /editar atribuição/i })
     ).toBeInTheDocument();
   });
-  fireEvent.change(screen.getByLabelText(/novo motorista/i), {
+  fireEvent.change(screen.getByLabelText(/Novo Motorista/i), {
     target: { value: "2" },
   });
-  fireEvent.change(screen.getByLabelText(/novo caminhão/i), {
+  fireEvent.change(screen.getByLabelText(/Novo Caminhão/i), {
     target: { value: "2" },
   });
-  fireEvent.change(screen.getByLabelText(/nova data/i), {
+  fireEvent.change(screen.getByLabelText(/Nova Data/i), {
     target: { value: "2023-10-13" },
   });
 
   fireEvent.submit(screen.getByTestId("edit-assignment-form"));
 
-  expect(await screen.findByText(/2023-10-13/i)).toBeInTheDocument();
+  expect(await screen.findByText("13/10/2023")).toBeInTheDocument();
 });
 
 test("deletes an assignment", async () => {
@@ -213,7 +213,7 @@ test("handles error when deleting an assignment", async () => {
     name: /excluir atribuição/i,
   });
   fireEvent.click(deleteButtons[0]);
-  fireEvent.click(screen.getByText(/excluir/i));
+  fireEvent.click(screen.getByText(/Excluir permanentemente/i));
 
   await waitFor(() => {
     expect(screen.getByText(/erro ao excluir atribuição/i)).toBeInTheDocument();

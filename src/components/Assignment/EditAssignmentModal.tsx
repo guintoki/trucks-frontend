@@ -217,7 +217,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
       <ModalTitle>Editar Atribuição</ModalTitle>
       <Form onSubmit={handleSubmit} data-testid="edit-assignment-form">
         <FormGroup>
-          <Label htmlFor="editDriver">Motorista</Label>
+          <Label htmlFor="editDriver">Novo Motorista</Label>
           <Select
             id="editDriver"
             value={driverId}
@@ -234,7 +234,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="editTruck">Caminhão</Label>
+          <Label htmlFor="editTruck">Novo Caminhão</Label>
           <Select
             id="editTruck"
             value={truckId}
@@ -251,7 +251,7 @@ const EditAssignmentModal: React.FC<EditAssignmentModalProps> = ({
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="editDate">Data</Label>
+          <Label htmlFor="editDate">Nova Data</Label>
           <Input
             type="date"
             id="editDate"
